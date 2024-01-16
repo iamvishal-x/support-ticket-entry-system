@@ -9,6 +9,10 @@ const createAgent = catchAsync(async (req, res, next) => {
 
   const agent = await models.agentSchema.create(body);
 
+  if (!agent) {
+    throw new ApiError(HttpStatus.BAD_REQUEST, "Agent creation failed");
+  }
+
   return res.status(HttpStatus.CREATED).json({ success: true, data: agent });
 });
 
@@ -79,24 +83,37 @@ const buildMongoQuery = (req, mongoQuery) => {
     activeAsc: { active: 1 },
     activeDesc: { active: -1 },
   };
+  const allowedSearchByFields = ["name", "email", "description", "phone"];
 
-  if (req.query && req.query.search && req.query.search.trim()) {
-    const isPhoneNumber = Math.abs(parseInt(req.query.search.trim()));
+  const searchValue = req.query.search?.trim() || null;
+  const searchBy = allowedSearchByFields.includes(req.query.searchBy?.trim())
+    ? req.query.searchBy?.trim()
+    : null;
+  const isPhoneNumber = Math.abs(parseInt(searchValue)) || null;
+  const regex = { $regex: searchValue, $options: "i" };
 
-    if (isPhoneNumber) {
-      mongoQuery["search"]["$or"] = [{ phone: isPhoneNumber }];
-    } else {
-      const regex = { $regex: req.query.search.trim(), $options: "i" };
-      mongoQuery["search"]["$or"] = [
-        { name: regex },
-        { email: regex },
-        { description: regex },
-      ];
-    }
+  if (
+    (searchBy && !searchValue) ||
+    (isPhoneNumber && searchBy !== "phone") ||
+    (!isPhoneNumber && searchBy === "phone")
+  ) {
+    throw new ApiError(HttpStatus.BAD_REQUEST, `Invalid search combination`);
+  }
+
+  if (isPhoneNumber) {
+    mongoQuery["search"] = { [searchBy]: isPhoneNumber };
+  } else if (searchBy) {
+    mongoQuery["search"] = { [searchBy]: regex };
+  } else {
+    mongoQuery["search"]["$or"] = [
+      { name: regex },
+      { email: regex },
+      { description: regex },
+    ];
   }
 
   mongoQuery["sortBy"] =
-    sortByOptions[req.query.sortBy] || sortByOptions["createdAtAsc"];
+    sortByOptions[req.query.sortBy] || sortByOptions["createdAtDesc"];
 };
 
 export default {

@@ -6,6 +6,7 @@ const SupportAgentSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+      index: true,
     },
     email: {
       type: String,
@@ -22,6 +23,7 @@ const SupportAgentSchema = new mongoose.Schema(
       type: String,
       trim: true,
       default: "",
+      index: true,
     },
     active: {
       type: Boolean,

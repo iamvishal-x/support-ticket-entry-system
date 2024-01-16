@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { TicketSeverity, TicketStatus, TicketType } from "../constants.js";
 
 const TicketSchema = new mongoose.Schema(
   {
@@ -10,33 +11,37 @@ const TicketSchema = new mongoose.Schema(
     description: {
       type: String,
       trim: true,
+      default: "",
     },
     severity: {
       type: String,
-      enum: ["Low", "Medium", "High"],
+      enum: Object.values(TicketSeverity),
       required: true,
-      default: "Low",
+      default: TicketSeverity.low,
+      index: true,
     },
     type: {
       type: String,
-      enum: ["Bug", "Enhancement", "Feature"],
+      enum: Object.values(TicketType),
       required: true,
-      default: "Bug",
+      default: TicketType.bug,
+      index: true,
     },
     assignedTo: {
       type: mongoose.Schema.ObjectId,
       ref: "Agent",
-      required: true,
+      default: null,
+      index: true,
     },
     status: {
       type: String,
-      enum: ["New", "Assigned", "Resolved"],
+      enum: Object.values(TicketStatus),
       required: true,
-      default: "New",
+      default: TicketStatus.new,
+      index: true,
     },
     resolvedOn: {
       type: Date,
-      default: null,
     },
   },
   {

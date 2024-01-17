@@ -11,4 +11,8 @@
 }
 .app-container {
   width: 90%;
+  background-color: #EEEEFF;
+  padding: 2rem;
+  height: 100vh;
+  overflow: scroll;
 }

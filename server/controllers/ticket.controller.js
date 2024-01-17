@@ -7,6 +7,7 @@ import {
   TicketFilterByKeysArr,
   TicketStatus,
   splitAndFilterString,
+  TicketPopulateFields,
 } from "../constants.js";
 
 const createTicket = catchAsync(async (req, res, next) => {
@@ -27,7 +28,9 @@ const getATicket = catchAsync(async (req, res, next) => {
     throw new ApiError(HttpStatus.BAD_REQUEST, "Invalid id");
   }
 
-  const ticket = await models.ticketSchema.findById(id);
+  const ticket = await models.ticketSchema
+    .findById(id)
+    .populate(TicketPopulateFields);
   if (!ticket) {
     throw new ApiError(HttpStatus.NOT_FOUND, "No ticket found");
   }
@@ -66,11 +69,9 @@ const updateTicket = catchAsync(async (req, res, next) => {
     body["resolvedOn"] = new Date().toISOString();
   }
 
-  const updatedTicket = await models.ticketSchema.findByIdAndUpdate(
-    id,
-    { $set: body },
-    { new: true }
-  );
+  const updatedTicket = await models.ticketSchema
+    .findByIdAndUpdate(id, { $set: body }, { new: true })
+    .populate(TicketPopulateFields);
 
   return res.status(HttpStatus.OK).json({ success: true, data: updatedTicket });
 });
@@ -85,6 +86,7 @@ const getAllTickets = catchAsync(async (req, res, next) => {
   const [tickets, ticketsCount] = await Promise.all([
     models.ticketSchema
       .find(mongoQuery.search)
+      .populate(TicketPopulateFields)
       .sort(mongoQuery.sortBy)
       .skip(limit * (page - 1))
       .limit(limit),

@@ -5,10 +5,12 @@ import ApiRequest from "./utils/ApiRequest";
 import {
   AxiosMethods,
   SupportTicketsEndpoint,
+  SupportAgentsEndpoint,
   sidebarNavigationOptions,
   ticketsViewOptions,
 } from "./Constants.js";
 import { Sidebar } from "./components/Sidebar/Sidebar.js";
+import { AgentHomepage } from "./components/Homepage/AgentHomepage/AgentHomepage.js";
 
 function App() {
   const [ticketsViewType, setTicketsViewType] = useState(
@@ -20,6 +22,8 @@ function App() {
 
   const [tickets, setTickets] = useState([]);
   const [ticketsResponse, setTicketsResponse] = useState({});
+  const [agents, setAgents] = useState([]);
+  const [agentsResponse, setAgentsResponse] = useState({});
 
   const fetchAllTickets = async () => {
     try {
@@ -39,8 +43,27 @@ function App() {
     }
   };
 
+  const fetchAllAgents = async () => {
+    try {
+      console.log(SupportAgentsEndpoint);
+      const response = await ApiRequest(
+        AxiosMethods.GET,
+        SupportAgentsEndpoint
+      );
+      setAgentsResponse((prev) => {
+        return { ...prev, response };
+      });
+      setAgents((prev) => {
+        return [...prev, ...response.data];
+      });
+    } catch (error) {
+      console.log("appp------", error.toJSON());
+    }
+  };
+
   useEffect(() => {
     fetchAllTickets();
+    fetchAllAgents();
   }, []);
 
   const updateHomepageContent = (type) => {
@@ -56,8 +79,11 @@ function App() {
         />
       </div>
       <div className="app-container">
-        {homepageContent === "tickets" && (
+        {homepageContent === sidebarNavigationOptions.tickets && (
           <TicketHomepage ticketsViewType={ticketsViewType} tickets={tickets} />
+        )}
+        {homepageContent === sidebarNavigationOptions.agents && (
+          <AgentHomepage agents={agents} />
         )}
       </div>
     </div>

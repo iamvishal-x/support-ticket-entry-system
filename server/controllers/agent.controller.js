@@ -85,7 +85,7 @@ const buildMongoQuery = (req, mongoQuery) => {
   };
   const allowedSearchByFields = ["name", "email", "description", "phone"];
 
-  const searchValue = req.query.search?.trim() || null;
+  const searchValue = req.query.search?.trim() || "";
   const searchBy = allowedSearchByFields.includes(req.query.searchBy?.trim())
     ? req.query.searchBy?.trim()
     : null;

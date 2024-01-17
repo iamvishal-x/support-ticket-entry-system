@@ -1,18 +1,18 @@
 /* Kanban View */
 .homepage-kanban-container{
-    background-color: #EEEEFF;
-    padding: 2rem;
     display: flex;
     justify-content: space-between;
 }
 
 .homepage-kanban {
-    width: 25%;
+    width: 100%;
+    min-width: 25%;
     height: 100vh;
     border-radius: 0;
     border: 4px solid white;
     background-color: #E7E7E7;
-    padding-inline:2rem;
+    padding-inline:1.5rem;
+    margin-inline:1rem;
 }
 
 .homepage-kanban-heading{

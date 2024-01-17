@@ -23,6 +23,8 @@ export const TicketFilterByKeysArr = [
   "type",
 ];
 
+export const TicketPopulateFields = ["assignedTo"];
+
 export const splitAndFilterString = (str) => {
   const arr = str
     .split(",")

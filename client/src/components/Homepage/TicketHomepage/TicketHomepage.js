@@ -1,6 +1,7 @@
 import { TicketCard } from "../../Ticket/TicketCard";
 import "./TicketHomepage.css";
 import React from "react";
+import { ticketsViewOptions } from "../../../Constants";
 
 export const TicketHomepage = ({ ticketsViewType, tickets }) => {
   console.log("tickets--", tickets);
@@ -8,7 +9,7 @@ export const TicketHomepage = ({ ticketsViewType, tickets }) => {
   return (
     <>
       {/* Kanban View */}
-      {ticketsViewType === "kanban" && (
+      {ticketsViewType === ticketsViewOptions.kanban && (
         <div className="homepage-kanban-container">
           {ticketStatus.map((status, i) => (
             <div className="homepage-kanban">
@@ -40,7 +41,7 @@ export const TicketHomepage = ({ ticketsViewType, tickets }) => {
       )}
 
       {/* List View */}
-      {ticketsViewType === "list" && (
+      {ticketsViewType === ticketsViewOptions.list && (
         <div className="homepage-list-container">
           {tickets?.length > 0 &&
             tickets?.map((ticket, index) => (

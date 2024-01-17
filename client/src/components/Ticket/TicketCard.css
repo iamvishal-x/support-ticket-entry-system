@@ -1,0 +1,26 @@
+
+.ticket-card{
+    background-color: white;
+    border: 2px solid #EEEEFF;
+    border-radius: 2px;
+    padding: 1rem;
+    min-height: 25vh;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.ticket-card-top {
+    display: flex;
+    justify-content: space-between;
+}
+
+.ticket-card-top-col-1 {
+    display: flex;
+    justify-content: space-between;
+}
+.ticket-card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}

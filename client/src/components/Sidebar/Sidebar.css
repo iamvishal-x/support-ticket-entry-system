@@ -1,0 +1,24 @@
+.sidebar {
+    padding: 2rem 1.5rem;
+}
+
+.sidebar-key{
+    margin: 0;
+    margin-bottom: 2rem;
+    border-radius: 6px;
+    background-color: #f7f7f7;
+    cursor: pointer;
+    padding: 1rem;
+    text-align: center;
+    text-transform: capitalize;
+    font-weight: 500;
+    letter-spacing: 3px;
+    color: #282828;
+}
+
+.sidebar-key.sidebar-key-active {
+    background-color:  #EEEEFF;
+}
+.sidebar-key:hover {
+    background-color:  #dbdbe6;
+}

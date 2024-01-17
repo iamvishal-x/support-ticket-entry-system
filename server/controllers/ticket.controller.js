@@ -123,8 +123,9 @@ const buildMongoQuery = (req, mongoQuery) => {
     const regex = { $regex: req.query.search.trim(), $options: "i" };
     andQuery.push({ $or: [{ topic: regex }, { description: regex }] });
   }
-
-  mongoQuery["search"]["$and"] = andQuery;
+  if (andQuery.length) {
+    mongoQuery["search"]["$and"] = andQuery;
+  }
 };
 
 const assignTicketsToAgents = catchAsync(async (req, res, next) => {

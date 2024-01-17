@@ -1,0 +1,14 @@
+.html {
+  margin: 0;
+  padding: 0;
+}
+
+.app {
+  display: flex;
+}
+.app-sidebar {
+  width: 10%;
+}
+.app-container {
+  width: 90%;
+}

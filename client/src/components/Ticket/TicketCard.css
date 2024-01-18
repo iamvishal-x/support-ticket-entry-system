@@ -1,26 +1,55 @@
 
 .ticket-card{
     background-color: white;
-    border: 2px solid #EEEEFF;
-    border-radius: 2px;
+    border-radius: 6px;
     padding: 1rem;
     min-height: 25vh;
     margin-bottom: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-shadow: 5px 2px 6px 0px #d4d4d4a8;
 }
+
+.ticket-card > div:not(:last-child) {
+    margin-bottom: 1rem;
+}
+
 .ticket-card-top {
     display: flex;
     justify-content: space-between;
+    gap: 1rem;
+}
+
+.ticket-card-top-topic{
+    font-weight: 500;
 }
 
 .ticket-card-top-col-1 {
     display: flex;
     justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
 }
+
 .ticket-card-bottom {
+
+}
+
+.ticket-card-bottom-row-1{
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    margin-bottom: 1rem;
+}
+
+.ticket-card-bottom-row-1-col-2 > p {
+    margin: 0;
+    font-size: 12px;
+    text-align: end;
+    color: #515c67
+}
+
+.ticket-card-bottom-row-2{
+    display: flex;
+    justify-content: space-between;
 }

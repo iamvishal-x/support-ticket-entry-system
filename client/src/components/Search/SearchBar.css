@@ -1,0 +1,28 @@
+.search {
+    margin: 1rem;   
+    display: flex;
+    justify-content: space-between;
+}
+
+.search-left{
+    display: flex;
+    align-items: center;
+
+}
+.search-right {
+    
+
+}
+
+.search-right-sort {
+
+    width: auto;
+    text-align: end;
+    border-color: transparent;
+    background-color:transparent;
+}
+.search-right-sort:disabled{
+    border-color: transparent;
+    background-color:transparent;
+    cursor: auto;
+}

@@ -3,6 +3,7 @@ import HttpStatus from "http-status";
 import catchAsync from "../utils/catchAsync.js";
 import ApiError from "../utils/ApiError.js";
 import mongoose from "mongoose";
+import ticketController from "./ticket.controller.js";
 
 const createAgent = catchAsync(async (req, res, next) => {
   const body = req.body;
@@ -12,6 +13,8 @@ const createAgent = catchAsync(async (req, res, next) => {
   if (!agent) {
     throw new ApiError(HttpStatus.BAD_REQUEST, "Agent creation failed");
   }
+
+  ticketController.assignTicketsToAgents();
 
   return res.status(HttpStatus.CREATED).json({ success: true, data: agent });
 });

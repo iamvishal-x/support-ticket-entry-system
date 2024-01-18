@@ -6,13 +6,27 @@
 .app {
   display: flex;
 }
+
 .app-sidebar {
   width: 10%;
+  border-right: 2px solid #f4f5f7;
+  margin-block: 1rem;
 }
+
 .app-container {
   width: 90%;
-  background-color: #EEEEFF;
+  /* background-color: #EEEEFF; */
   padding: 2rem;
   height: 100vh;
   overflow: scroll;
+}
+
+.divider-vertical {
+  height: 1.5rem;
+}
+
+.divider-horizontal-custom {
+  margin-inline: 1rem;
+  width: auto;
+  min-width: auto;
 }

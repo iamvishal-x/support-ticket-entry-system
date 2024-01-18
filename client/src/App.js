@@ -6,18 +6,19 @@ import {
   AxiosMethods,
   SupportTicketsEndpoint,
   SupportAgentsEndpoint,
-  sidebarNavigationOptions,
-  ticketsViewOptions,
+  SidebarNavigationOptions,
+  TicketsViewOptions,
 } from "./Constants.js";
 import { Sidebar } from "./components/Sidebar/Sidebar.js";
 import { AgentHomepage } from "./components/Homepage/AgentHomepage/AgentHomepage.js";
+import { SearchBar } from "./components/Search/SearchBar.js";
 
 function App() {
   const [ticketsViewType, setTicketsViewType] = useState(
-    ticketsViewOptions.kanban
+    TicketsViewOptions.kanban
   );
   const [homepageContent, setHomepageContent] = useState(
-    sidebarNavigationOptions.tickets
+    SidebarNavigationOptions.tickets
   );
 
   const [tickets, setTickets] = useState([]);
@@ -79,10 +80,15 @@ function App() {
         />
       </div>
       <div className="app-container">
-        {homepageContent === sidebarNavigationOptions.tickets && (
+        <SearchBar
+          homepageContent={homepageContent}
+          ticketsViewType={ticketsViewType}
+          setTicketsViewType={setTicketsViewType}
+        />
+        {homepageContent === SidebarNavigationOptions.tickets && (
           <TicketHomepage ticketsViewType={ticketsViewType} tickets={tickets} />
         )}
-        {homepageContent === sidebarNavigationOptions.agents && (
+        {homepageContent === SidebarNavigationOptions.agents && (
           <AgentHomepage agents={agents} />
         )}
       </div>

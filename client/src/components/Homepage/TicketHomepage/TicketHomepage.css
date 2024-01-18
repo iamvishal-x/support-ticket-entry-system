@@ -8,20 +8,19 @@
     width: 100%;
     min-width: 25%;
     height: 100vh;
-    border-radius: 0;
-    border: 4px solid white;
-    background-color: #E7E7E7;
+    border-radius: 6px;
+    background-color: #f4f5f7;
     padding-inline:1.5rem;
     margin-inline:1rem;
 }
 
 .homepage-kanban-heading{
-    font-size: 20px;
-    font-weight: 500;
-    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: start;
     text-transform: capitalize;
-    letter-spacing: 6px;
-    color: #282828;
+    letter-spacing: 1px;
+    color: #515c67
 }
 
 .homepage-kanban-ticket-card-wrapper {
@@ -32,7 +31,8 @@
 
 /* List View */
 .homepage-list-container{
-    background-color: #EEEEFF;
-    padding: 2rem;
-
+    background-color: #f4f5f7;
+    border-radius: 6px;
+    padding: 1rem;
+    margin: 1rem;
 }

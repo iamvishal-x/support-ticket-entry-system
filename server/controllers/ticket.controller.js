@@ -18,6 +18,8 @@ const createTicket = catchAsync(async (req, res, next) => {
     throw new ApiError(HttpStatus.BAD_REQUEST, "Ticket creation failed");
   }
 
+  assignTicketsToAgents();
+
   return res.status(HttpStatus.CREATED).json({ success: true, data: ticket });
 });
 
@@ -130,14 +132,26 @@ const buildMongoQuery = (req, mongoQuery) => {
   }
 };
 
-const assignTicketsToAgents = catchAsync(async (req, res, next) => {
-  const [unassignedTickets, agents] = await Promise.all([
+const assignTicketsToAgents = catchAsync(async () => {
+  const [unassignedTickets, agents, lastAssignedTicket] = await Promise.all([
     models.ticketSchema
       .find({
-        $or: [{ assignedTo: { $exists: false } }, { assignedTo: null }],
+        $or: [
+          { status: TicketStatus.new },
+          { assignedTo: { $exists: false } },
+          { assignedTo: null },
+        ],
       })
+      .lean()
       .sort({ createdAt: 1 }),
-    models.agentSchema.find({ active: true }).sort({ createdAt: 1 }),
+    models.agentSchema.find({ active: true }).sort({ _id: 1 }).lean(),
+    models.ticketSchema
+      .find({ status: TicketStatus.assigned })
+      .populate("assignedTo")
+      .sort({ createdAt: 1 })
+      .limit(1)
+      .lean()
+      .then((x) => x.pop()),
   ]);
 
   if (!agents.length || !unassignedTickets.length) {
@@ -147,8 +161,43 @@ const assignTicketsToAgents = catchAsync(async (req, res, next) => {
     );
   }
 
-  // if (unassignedTickets.length && agents.length) {
-  // }
+  const assignedTicketsQuery = [];
+  if (agents.length && unassignedTickets.length) {
+    let lastAgentIndex = agents.findIndex((x) => {
+      console.log(
+        "index",
+        String(x._id) === String(lastAssignedTicket?.assignedTo?._id)
+      );
+      return String(x._id) === String(lastAssignedTicket?.assignedTo?._id);
+    });
+
+    if (!lastAgentIndex) lastAgentIndex = 0;
+
+    unassignedTickets.forEach((ticket) => {
+      // agent[0]
+      lastAgentIndex += 1; // agent[1]
+      if (!agents[lastAgentIndex]) lastAgentIndex = 0; // checks for next agent -> if no agent then set agent[0];
+      assignedTicketsQuery.push({
+        updateOne: {
+          filter: { _id: ticket._id },
+          update: {
+            $set: {
+              assignedTo: agents[lastAgentIndex]._id,
+              status: TicketStatus.assigned,
+            },
+          },
+        },
+      });
+    });
+
+    if (!assignedTicketsQuery.length) {
+      console.error("No tickets or agents to assign");
+    }
+
+    const result = await models.ticketSchema.bulkWrite(assignedTicketsQuery);
+    console.log(result);
+    return;
+  }
 });
 
 export default {

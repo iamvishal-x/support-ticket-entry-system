@@ -2,20 +2,15 @@ import Joi from "joi";
 
 const createAgentSchemaValidator = {
   body: Joi.object({
-    name: Joi.string().required().trim().min(2).max(24),
-    email: Joi.string().trim().email().lowercase().required().max(50),
+    name: Joi.string().required().min(2).max(24),
+    email: Joi.string().email().required().max(50),
     phone: Joi.string()
       .required()
       .min(8)
       .max(12)
       .pattern(/^[0-9]+$/) // Pattern to check if phone number is bw 0-9
       .message("Phone number should be between 0-9"),
-    description: Joi.string()
-      .trim()
-      .lowercase()
-      .allow("")
-      .default("")
-      .max(1000),
+    description: Joi.string().allow("").default("").max(200),
     active: Joi.boolean().default(true),
   })
     .required()
@@ -31,14 +26,8 @@ const updateAgentSchemaValidator = {
       .messages({ "any.invalid": "Invalid id passed" }),
   }),
   body: Joi.object({
-    name: Joi.string().not("", null).trim().optional().min(2).max(24),
-    email: Joi.string()
-      .not("", null)
-      .trim()
-      .email()
-      .lowercase()
-      .optional()
-      .max(50),
+    name: Joi.string().not("", null).optional().min(2).max(24),
+    email: Joi.string().not("", null).email().optional().max(50),
     phone: Joi.string()
       .not("", 0, null)
       .min(8)
@@ -46,7 +35,7 @@ const updateAgentSchemaValidator = {
       .pattern(/^[0-9]+$/) // Pattern to check if phone number is bw 0-9
       .message("Phone number should be between 0-9")
       .optional(),
-    description: Joi.string().trim().lowercase().allow("").optional().max(1000),
+    description: Joi.string().allow("").optional().max(200),
     active: Joi.boolean().optional(),
   })
     .required()

@@ -11,8 +11,8 @@ const ApiRequest = async (method, path, data) => {
     });
     return response.data;
   } catch (error) {
-    console.error("API Request error:", error.toJSON());
-    throw error;
+    console.error("----API Request error:", error);
+    throw error.response.data;
   }
 };
 

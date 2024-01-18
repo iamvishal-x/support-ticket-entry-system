@@ -12,7 +12,7 @@ import {
 import { Sidebar } from "./components/Sidebar/Sidebar.js";
 import { AgentHomepage } from "./components/Homepage/AgentHomepage/AgentHomepage.js";
 import { SearchBar } from "./components/Search/SearchBar.js";
-import { Modal } from "antd";
+import { Modal, notification } from "antd";
 import { CreateAgent } from "./components/Agent/CreateAgent/CreateAgent.js";
 import { CreateTicket } from "./components/Ticket/CreateTicket/CreateTicket.js";
 
@@ -28,88 +28,128 @@ function App() {
   const [ticketsResponse, setTicketsResponse] = useState({});
   const [agents, setAgents] = useState([]);
   const [agentsResponse, setAgentsResponse] = useState({});
+  const [modal, setModal] = useState(false);
+  const [refreshData, setRefreshData] = useState(true);
 
-  const [modal, setModal] = useState(true);
+  const [api, contextHolder] = notification.useNotification();
 
-  const fetchAllTickets = async () => {
+  const fetchDocuments = async (method, endpoint, context) => {
     try {
-      console.log(SupportTicketsEndpoint);
-      const response = await ApiRequest(
-        AxiosMethods.GET,
-        SupportTicketsEndpoint
-      );
-      setTicketsResponse((prev) => {
-        return { ...prev, response };
-      });
-      setTickets((prev) => {
-        return [...prev, ...response.data];
-      });
+      console.log("inside fetch", endpoint);
+      const response = await ApiRequest(method, endpoint);
+
+      if (context === "tickets") {
+        setTicketsResponse({ response }); // Set tickets response directly
+        setTickets(response.data); // Set tickets state directly
+      } else {
+        setAgentsResponse({ response }); // Set agents response directly
+        setAgents(response.data); // Set agents state directly
+      }
     } catch (error) {
-      console.log("appp------", error.toJSON());
+      console.log("appp------", error);
+      openNotification(error.message, "error");
     }
   };
 
-  const fetchAllAgents = async () => {
-    try {
-      console.log(SupportAgentsEndpoint);
-      const response = await ApiRequest(
-        AxiosMethods.GET,
-        SupportAgentsEndpoint
-      );
+  const setContextData = (context, response) => {
+    if (context === "tickets") {
+      setTicketsResponse((prev) => {
+        return { ...prev, response };
+      });
+      setTickets(response.data);
+    } else {
       setAgentsResponse((prev) => {
         return { ...prev, response };
       });
       setAgents((prev) => {
         return [...prev, ...response.data];
       });
-    } catch (error) {
-      console.log("appp------", error.toJSON());
     }
   };
 
   useEffect(() => {
-    fetchAllTickets();
-    fetchAllAgents();
-  }, []);
+    if (!refreshData) return;
+    fetchDocuments(
+      AxiosMethods.GET,
+      SupportTicketsEndpoint,
+      SidebarNavigationOptions.tickets
+    );
+    fetchDocuments(
+      AxiosMethods.GET,
+      SupportAgentsEndpoint,
+      SidebarNavigationOptions.agents
+    );
+    setRefreshData(false);
+  }, [refreshData]);
 
   const updateHomepageContent = (type) => {
     return setHomepageContent(type);
   };
 
+  const openNotification = (description, type) => {
+    api[type]({
+      message: type.toUpperCase(),
+      description: description,
+      placement: "topRight",
+      duration: 2,
+      className: "app-notification",
+    });
+  };
+
   return (
-    <div className="app">
-      <div className="app-sidebar">
-        <Sidebar
-          homepageContent={homepageContent}
-          updateHomepageContent={updateHomepageContent}
-        />
+    <>
+      {contextHolder}
+      <div className="app">
+        <div className="app-sidebar">
+          <Sidebar
+            homepageContent={homepageContent}
+            updateHomepageContent={updateHomepageContent}
+          />
+        </div>
+
+        <div className="app-container">
+          <SearchBar
+            homepageContent={homepageContent}
+            ticketsViewType={ticketsViewType}
+            setTicketsViewType={setTicketsViewType}
+            modal={modal}
+            setModal={setModal}
+            fetchDocuments={fetchDocuments}
+            agents={agents}
+          />
+
+          {homepageContent === SidebarNavigationOptions.tickets ? (
+            <TicketHomepage
+              ticketsViewType={ticketsViewType}
+              tickets={tickets}
+            />
+          ) : (
+            <AgentHomepage agents={agents} />
+          )}
+
+          <Modal
+            centered
+            open={modal}
+            footer={null}
+            onCancel={() => setModal(false)}
+          >
+            {homepageContent === SidebarNavigationOptions.tickets ? (
+              <CreateTicket
+                setModal={setModal}
+                setRefreshData={setRefreshData}
+                openNotification={openNotification}
+              />
+            ) : (
+              <CreateAgent
+                setModal={setModal}
+                setRefreshData={setRefreshData}
+                openNotification={openNotification}
+              />
+            )}
+          </Modal>
+        </div>
       </div>
-      <div className="app-container">
-        <SearchBar
-          homepageContent={homepageContent}
-          ticketsViewType={ticketsViewType}
-          setTicketsViewType={setTicketsViewType}
-          modal={modal}
-          setModal={setModal}
-        />
-        {homepageContent === SidebarNavigationOptions.tickets && (
-          <TicketHomepage ticketsViewType={ticketsViewType} tickets={tickets} />
-        )}
-        {homepageContent === SidebarNavigationOptions.agents && (
-          <AgentHomepage agents={agents} />
-        )}
-        <Modal
-          // title="Create Agent"
-          centered
-          open={modal}
-          footer={null}
-          onOk={() => setModal(false)}
-          onCancel={() => setModal(false)}
-        >
-          <CreateTicket />
-        </Modal>
-      </div>
-    </div>
+    </>
   );
 }
 

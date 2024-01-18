@@ -1,30 +1,63 @@
 import "./CreateTicket.css";
 import React from "react";
-import {
-  Button,
-  Checkbox,
-  Divider,
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  Space,
-} from "antd";
+import { Button, Form, Input, Radio, Space } from "antd";
+import ApiRequest from "../../../utils/ApiRequest";
+import { AxiosMethods, SupportTicketsEndpoint } from "../../../Constants";
 
-export const CreateTicket = () => {
+export const CreateTicket = ({
+  setModal,
+  setRefreshData,
+  openNotification,
+}) => {
+  const [form] = Form.useForm();
+
+  const handleTicketCreation = async (values) => {
+    try {
+      const filteredObject = Object.keys(values).reduce((acc, curr) => {
+        if (values[curr]) {
+          return { ...acc, [curr]: values[curr].trim() };
+        }
+        return acc;
+      }, {});
+
+      const response = await ApiRequest(
+        AxiosMethods.POST,
+        SupportTicketsEndpoint,
+        filteredObject
+      );
+
+      if (response && response.success) {
+        handleModalExit();
+      }
+    } catch (error) {
+      console.log("creation------", error);
+      openNotification(error.message, "error");
+    }
+  };
+
+  const handleModalExit = () => {
+    form.resetFields();
+    setRefreshData(true);
+    setModal(false);
+  };
+
   return (
     <div className="create-ticket">
       <p>Create Ticket</p>
       <Form
+        form={form}
         name="create-ticket"
         labelCol={{
           span: 5,
         }}
         initialValues={{
-          remember: true,
+          ["topic"]: "",
+          ["description"]: "",
+          ["severity"]: "low",
+          ["type"]: "bug",
         }}
-        // onFinish={onFinish}
-        // onFinishFailed={onFinishFailed}
+        onFinish={handleTicketCreation}
+        onFinishFailed={(e) => console.log("e---", e)}
         autoComplete="off"
       >
         <Form.Item
@@ -36,8 +69,12 @@ export const CreateTicket = () => {
               message: "Please input your topic!",
             },
             {
-              max: 50,
-              message: "Topic cannot exceed 50 characters",
+              min: 3,
+              message: "Topic should be of minimum 3 characters",
+            },
+            {
+              max: 100,
+              message: "Topic cannot exceed 100 characters",
             },
           ]}
         >
@@ -58,7 +95,7 @@ export const CreateTicket = () => {
         </Form.Item>
 
         <Form.Item name="severity" label="Severity">
-          <Radio.Group defaultValue="low">
+          <Radio.Group>
             <Radio.Button value="low">Low</Radio.Button>
             <Radio.Button value="medium">Medium</Radio.Button>
             <Radio.Button value="high">High</Radio.Button>
@@ -66,7 +103,7 @@ export const CreateTicket = () => {
         </Form.Item>
 
         <Form.Item name="type" label="Type">
-          <Radio.Group defaultValue="bug">
+          <Radio.Group>
             <Radio.Button value="bug">Bug</Radio.Button>
             <Radio.Button value="feature">Feature</Radio.Button>
             <Radio.Button value="enhancement">Enhancement</Radio.Button>
@@ -80,9 +117,9 @@ export const CreateTicket = () => {
           }}
         >
           <Space>
-            <Button htmlType="cancel">Cancel</Button>
+            <Button onClick={handleModalExit}>Cancel</Button>
             <Button type="primary" htmlType="submit">
-              Submit
+              Create Ticket
             </Button>
           </Space>
         </Form.Item>

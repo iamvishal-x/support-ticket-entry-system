@@ -1,30 +1,60 @@
 import React from "react";
 import "./CreateAgent.css";
-import {
-  Button,
-  Checkbox,
-  Divider,
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  Space,
-} from "antd";
+import { Button, Form, Input, InputNumber, Radio, Space } from "antd";
+import { AxiosMethods, SupportAgentsEndpoint } from "../../../Constants";
+import ApiRequest from "../../../utils/ApiRequest";
 
-export const CreateAgent = () => {
+export const CreateAgent = ({ setModal, setRefreshData, openNotification }) => {
+  const [form] = Form.useForm();
+
+  const handleAgentCreation = async (values) => {
+    try {
+      const filteredObject = Object.keys(values).reduce((acc, curr) => {
+        if (values[curr]) {
+          return { ...acc, [curr]: values[curr].trim() };
+        }
+        return acc;
+      }, {});
+
+      const response = await ApiRequest(
+        AxiosMethods.POST,
+        SupportAgentsEndpoint,
+        filteredObject
+      );
+
+      if (response && response.success) {
+        handleModalExit();
+      }
+    } catch (error) {
+      console.log("creation agent------", error);
+      openNotification(error.message, "error");
+    }
+  };
+
+  const handleModalExit = () => {
+    form.resetFields();
+    setRefreshData(true);
+    setModal(false);
+  };
+
   return (
     <div className="create-agent">
       <p>Create Agent</p>
       <Form
+        form={form}
         name="create-agent"
         labelCol={{
           span: 5,
         }}
         initialValues={{
-          remember: true,
+          ["active"]: "true",
+          ["description"]: "",
+          ["name"]: "",
+          ["phone"]: "",
+          ["email"]: "",
         }}
-        // onFinish={onFinish}
-        // onFinishFailed={onFinishFailed}
+        onFinish={handleAgentCreation}
+        onFinishFailed={(e) => console.log("e---", e)}
         autoComplete="off"
       >
         <Form.Item
@@ -36,8 +66,12 @@ export const CreateAgent = () => {
               message: "Please input your name!",
             },
             {
-              max: 30,
-              message: "Name cannot exceed 30 characters",
+              min: 2,
+              message: "Name should be of minimum 3 characters",
+            },
+            {
+              max: 24,
+              message: "Name cannot exceed 24 characters",
             },
           ]}
         >
@@ -54,7 +88,7 @@ export const CreateAgent = () => {
             },
             {
               max: 50,
-              message: "Email cannot exceed 30 characters",
+              message: "Email cannot exceed 50 characters",
             },
             {
               type: "email",
@@ -71,6 +105,15 @@ export const CreateAgent = () => {
             {
               required: true,
               message: "Please input your phone!",
+            },
+            {
+              min: 8,
+              message: "Phone should be of minimum 8 digits",
+            },
+            {
+              max: 12,
+
+              message: "Phone should be of max 12 digits",
             },
           ]}
         >
@@ -89,7 +132,7 @@ export const CreateAgent = () => {
           <Input.TextArea showCount maxLength={200} />
         </Form.Item>
         <Form.Item name="active" label="Agent Active">
-          <Radio.Group defaultValue="true">
+          <Radio.Group>
             <Radio.Button value="true">Yes</Radio.Button>
             <Radio.Button value="false">No</Radio.Button>
           </Radio.Group>
@@ -101,9 +144,9 @@ export const CreateAgent = () => {
           }}
         >
           <Space>
-            <Button htmlType="cancel">Cancel</Button>
+            <Button onClick={handleModalExit}>Cancel</Button>
             <Button type="primary" htmlType="submit">
-              Submit
+              Create Agent
             </Button>
           </Space>
         </Form.Item>

@@ -1,5 +1,5 @@
-export const SupportTicketsEndpoint = "/support-tickets";
-export const SupportAgentsEndpoint = "/support-agents";
+export const SupportTicketsEndpoint = "/support-tickets?";
+export const SupportAgentsEndpoint = "/support-agents?";
 export const AxiosMethods = {
   GET: "GET",
   POST: "POST",
@@ -26,27 +26,27 @@ export const TicketsAvailableDropDownFilters = [
     label: "Status",
     value: "status",
     options: [
-      { label: "New", value: "new" },
-      { label: "Assigned", value: "assigned" },
-      { label: "Resolved", value: "resolved" },
+      { label: "New", key: "new" },
+      { label: "Assigned", key: "assigned" },
+      { label: "Resolved", key: "resolved" },
     ],
   },
   {
     label: "Severity",
     value: "severity",
     options: [
-      { label: "Low", value: "low" },
-      { label: "Medium", value: "medium" },
-      { label: "High", value: "high" },
+      { label: "Low", key: "low" },
+      { label: "Medium", key: "medium" },
+      { label: "High", key: "high" },
     ],
   },
   {
     label: "Type",
     value: "type",
     options: [
-      { label: "Bug", value: "bug" },
-      { label: "Feature", value: "feature" },
-      { label: "Enhancement", value: "enhancement" },
+      { label: "Bug", key: "bug" },
+      { label: "Feature", key: "feature" },
+      { label: "Enhancement", key: "enhancement" },
     ],
   },
 ];

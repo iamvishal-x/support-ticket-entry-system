@@ -80,7 +80,7 @@ const updateTicket = catchAsync(async (req, res, next) => {
 
 const getAllTickets = catchAsync(async (req, res, next) => {
   const mongoQuery = { search: {}, sortBy: {} },
-    limit = Math.max(Math.min(req.query.limit || 10, 100), 0),
+    limit = Math.max(Math.min(req.query.limit || 1000, 1000), 1),
     page = Math.max(req.query.page || 1, 1);
 
   buildMongoQuery(req, mongoQuery);

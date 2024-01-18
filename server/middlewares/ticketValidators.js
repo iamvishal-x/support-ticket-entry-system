@@ -8,8 +8,8 @@ import {
 
 const createTicketSchemaValidator = {
   body: Joi.object({
-    topic: Joi.string().required().trim().min(3).max(100),
-    description: Joi.string().trim().allow("").default("").max(1000).optional(),
+    topic: Joi.string().required().min(3).max(100),
+    description: Joi.string().allow("").default("").max(200).optional(),
     severity: Joi.string()
       .valid(...Object.values(TicketSeverity))
       .default(TicketSeverity.low)
@@ -36,13 +36,8 @@ const updateTicketSchemaValidator = {
       .messages({ "any.invalid": "Invalid Id Passed" }),
   }),
   body: Joi.object({
-    topic: Joi.string().trim().optional().not("", null, 0).min(2).max(100),
-    description: Joi.string()
-      .trim()
-      .default("")
-      .not(null, 0)
-      .optional()
-      .max(1000),
+    topic: Joi.string().optional().not("", null, 0).min(3).max(100),
+    description: Joi.string().default("").not(null, 0).optional().max(200),
     severity: Joi.string()
       .valid(...Object.values(TicketSeverity))
       .default(TicketSeverity.low)

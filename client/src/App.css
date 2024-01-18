@@ -10,7 +10,6 @@
 .app-sidebar {
   width: 10%;
   border-right: 2px solid #f4f5f7;
-  margin-top: 1rem;
 }
 
 .app-container {
@@ -27,4 +26,10 @@
 .divider-horizontal-custom {
   width: auto;
   min-width: auto;
+}
+
+.app-notification{
+  padding: 1rem !important;
+  font-size: 14px !important;
+  color: #515c67 !important;
 }

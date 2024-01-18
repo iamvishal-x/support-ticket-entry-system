@@ -13,6 +13,7 @@ const SupportAgentSchema = new mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
+      lowercase: true,
     },
     phone: {
       type: Number,

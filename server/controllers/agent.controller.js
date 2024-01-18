@@ -56,7 +56,7 @@ const updateAgent = catchAsync(async (req, res, next) => {
 
 const getAllAgents = catchAsync(async (req, res, next) => {
   const mongoQuery = { search: {}, sortBy: {} },
-    limit = Math.max(Math.min(req.query.limit || 10, 100), 0),
+    limit = Math.max(Math.min(req.query.limit || 1000, 1000), 1),
     page = Math.max(req.query.page || 1, 1);
 
   buildMongoQuery(req, mongoQuery);
@@ -95,15 +95,11 @@ const buildMongoQuery = (req, mongoQuery) => {
   const isPhoneNumber = Math.abs(parseInt(searchValue)) || null;
   const regex = { $regex: searchValue, $options: "i" };
 
-  if (
-    (searchBy && !searchValue) ||
-    (isPhoneNumber && searchBy !== "phone") ||
-    (!isPhoneNumber && searchBy === "phone")
-  ) {
+  if ((searchBy && !searchValue) || (searchBy === "phone" && !isPhoneNumber)) {
     throw new ApiError(HttpStatus.BAD_REQUEST, `Invalid search combination`);
   }
 
-  if (isPhoneNumber) {
+  if (searchBy === "phone" && isPhoneNumber) {
     mongoQuery["search"] = { [searchBy]: isPhoneNumber };
   } else if (searchBy) {
     mongoQuery["search"] = { [searchBy]: regex };

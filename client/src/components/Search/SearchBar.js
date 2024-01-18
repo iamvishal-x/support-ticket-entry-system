@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./SearchBar.css";
 import {
   Select,
@@ -21,6 +21,9 @@ import {
   TicketsViewOptions,
   TicketsAvailableSearchBy,
   AgentsAvailableSearchBy,
+  SupportAgentsEndpoint,
+  SupportTicketsEndpoint,
+  AxiosMethods,
 } from "../../Constants.js";
 
 export const SearchBar = ({
@@ -29,6 +32,8 @@ export const SearchBar = ({
   setTicketsViewType,
   modal,
   setModal,
+  fetchDocuments,
+  agents,
 }) => {
   const isTicketsPage = homepageContent === SidebarNavigationOptions.tickets;
   const dropdownFilters = TicketsAvailableDropDownFilters;
@@ -41,68 +46,195 @@ export const SearchBar = ({
     ? TicketsAvailableSearchBy
     : AgentsAvailableSearchBy;
 
+  const defaultFilterObject = {
+    tickets: {
+      searchBy: searchByFilters[0].value,
+      search: "",
+      status: [],
+      severity: [],
+      type: [],
+      assignedTo: [],
+      sortBy: "createdAtDesc",
+    },
+    agents: {
+      sortBy: "createdAtDesc",
+      searchBy: "",
+      search: "",
+    },
+  };
+
   const [fetching, setIsFetching] = useState(false);
-  const [options, setOptions] = useState([]);
-  const [sortBy, setSortBy] = useState("createdAtDesc");
-  const [searchBy, setSearchBy] = useState(searchByFilters[0].value);
-  const initFilter = () => {};
+  const [filterObject, setFilterObject] = useState(defaultFilterObject);
+
+  /**
+   * Function to update filterObject state with new values
+   * @param {*} name name of the field
+   * @param {*} value value of the gield
+   */
+  const updateFilterObject = (name, value) => {
+    setFilterObject((prevFilterObject) => {
+      return {
+        ...prevFilterObject,
+        [homepageContent]: {
+          ...prevFilterObject[homepageContent],
+          [name]: value,
+        },
+      };
+    });
+  };
+
+  /**
+   * Function to get default value from the filterObject state
+   * @param name name of the field
+   * @returns value of the given name field
+   */
+  const getDefaultValue = (name) => {
+    return filterObject[homepageContent][name];
+  };
+
+  /**
+   * Reset the state whenever home view changes
+   */
+  useEffect(() => {
+    setFilterObject(defaultFilterObject);
+  }, [homepageContent]);
+
+  /**
+   * Build filter/search query whenever user adds/updates any filter
+   */
+  useEffect(() => {
+    buildQueryAndFetch();
+  }, [filterObject]);
+
+  /**
+   * fn to build query string and fetch data with new query string
+   */
+  const buildQueryAndFetch = () => {
+    const data = filterObject[homepageContent];
+
+    let queryString = isTicketsPage
+      ? SupportTicketsEndpoint
+      : SupportAgentsEndpoint;
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (!value || !value.length) return;
+      if (key === "sortBy" && value === "createdAtDesc") return;
+
+      if (Array.isArray(value)) {
+        queryString += `&${key}=${value.join(",")}`;
+        return;
+      }
+
+      if (key === "searchBy" && !data.search) return;
+
+      queryString += `&${key}=${value}`;
+    });
+
+    fetchDocuments(AxiosMethods.GET, queryString, homepageContent);
+  };
+
+  /**
+   * Function to search and filter agents with the given value
+   * @param {*} value agent name
+   */
+  const getAgentsArray = async (value) => {
+    const queryString = `${SupportAgentsEndpoint}searchBy="name"&search=${value}`;
+
+    await fetchDocuments(
+      AxiosMethods.GET,
+      queryString,
+      SidebarNavigationOptions.agents
+    );
+  };
 
   return (
     <div className="search">
       <div className="search-top">
         <div className="search-top-left">
           <div className="search-top-left-searchbar">
+            {JSON.stringify(filterObject["status"])}
             <Space.Compact>
               <Select
-                defaultValue={searchByFilters[0].value}
+                defaultValue={getDefaultValue("searchBy")}
                 options={searchByFilters}
-                onChange={(e) => console.log(e.target)}
-                onSelect={(e) => console.log("select", e.target)}
+                onSelect={(e) => updateFilterObject("searchBy", e)}
               />
-              <Input placeholder={`Search ${searchBy || "all"}`} />
+              <Input
+                placeholder={`Search ${getDefaultValue("searchBy") || "all"}`}
+                allowClear={true}
+                value={getDefaultValue("search")}
+                onChange={(e) => updateFilterObject("search", e.target.value)}
+              />
             </Space.Compact>
           </div>
 
-          <div className="search-top-left-filters">
-            {dropdownFilters.map((filter) => (
-              <>
-                <Divider className="divider-vertical" type="vertical" />
-                <Dropdown
-                  menu={{
-                    items: filter.options,
-                    multiple: true,
-                    selectable: true,
-                  }}
-                >
-                  <Tooltip
-                    title={`Filter by ${filter.label}`}
-                    key={filter.value}
+          {isTicketsPage && (
+            <div className="search-top-left-filters">
+              {dropdownFilters.map((filter) => (
+                <>
+                  <Divider className="divider-vertical" type="vertical" />
+                  <Dropdown
+                    menu={{
+                      items: filter.options,
+                      multiple: true,
+                      selectable: true,
+                      onSelect: (e) => {
+                        updateFilterObject(filter.value, e.selectedKeys);
+                      },
+                      onDeselect: (e) => {
+                        updateFilterObject(filter.value, e.selectedKeys);
+                      },
+                    }}
                   >
-                    <Button>
-                      <Space>
-                        {filter.label}
-                        <DownOutlined />
-                      </Space>
-                    </Button>
-                  </Tooltip>
-                </Dropdown>
-              </>
-            ))}
-            <Divider className="divider-vertical" type="vertical" />
-            <Tooltip title="Filter by agent name" key="assignedTo">
-              <Select
-                mode={"multiple"}
-                style={{ width: "200px" }}
-                // value
-                // options
-                // onChange= (newValue) => {
-                //   setValue(newValue);
-                // }
-                placeholder="Filter by agent name"
-                maxTagCount="responsive"
-              />
-            </Tooltip>
-          </div>
+                    <Tooltip
+                      placement="top"
+                      arrow={false}
+                      title={`Filter by multiple ${filter.label}`}
+                      key={filter.value}
+                    >
+                      <Button>
+                        <Space>
+                          {filter.label}
+                          <DownOutlined />
+                        </Space>
+                      </Button>
+                    </Tooltip>
+                  </Dropdown>
+                </>
+              ))}
+              <Divider className="divider-vertical" type="vertical" />
+              <Tooltip
+                placement="top"
+                arrow={false}
+                title="Filter by multiple agent"
+                key="assignedTo"
+              >
+                <Select
+                  mode="multiple"
+                  maxTagCount="responsive"
+                  maxCount={3}
+                  style={{ width: "200px" }}
+                  value={getDefaultValue("assignedTo")}
+                  options={agents.map((agent) => {
+                    return {
+                      label: agent.name,
+                      value: agent._id,
+                    };
+                  })}
+                  onSearch={async (e) => await getAgentsArray(e)}
+                  onChange={(newValue) => {
+                    updateFilterObject("assignedTo", newValue);
+                  }}
+                  filterOption={(input, option) => {
+                    return option.label
+                      .toLowerCase()
+                      .includes(input.toLowerCase());
+                  }}
+                  placeholder="Filter by multiple agent"
+                />
+              </Tooltip>
+            </div>
+          )}
         </div>
         <div className="search-top-right">
           <Space.Compact>
@@ -117,27 +249,30 @@ export const SearchBar = ({
                 borderStartStartRadius: "6px",
                 borderEndStartRadius: "6px",
               }}
-              defaultValue={sortBy}
+              defaultValue={getDefaultValue("sortBy")}
               options={sortByFilters}
-              onChange={(e) => console.log(e.target)}
-              onSelect={(e) => console.log("select", e.target)}
+              onChange={(e) => updateFilterObject("sortBy", e)}
             />
           </Space.Compact>
-          <Divider className="divider-vertical" type="vertical" />
-          <Radio.Group
-            defaultValue={ticketsViewType}
-            onChange={(e) => {
-              setTicketsViewType(e.target.value);
-            }}
-            buttonStyle="solid"
-          >
-            <Radio.Button value={TicketsViewOptions.kanban}>
-              Kanban View
-            </Radio.Button>
-            <Radio.Button value={TicketsViewOptions.list}>
-              List View
-            </Radio.Button>
-          </Radio.Group>
+          {isTicketsPage && (
+            <>
+              <Divider className="divider-vertical" type="vertical" />
+              <Radio.Group
+                defaultValue={ticketsViewType}
+                onChange={(e) => {
+                  setTicketsViewType(e.target.value);
+                }}
+                buttonStyle="solid"
+              >
+                <Radio.Button value={TicketsViewOptions.kanban}>
+                  Kanban View
+                </Radio.Button>
+                <Radio.Button value={TicketsViewOptions.list}>
+                  List View
+                </Radio.Button>
+              </Radio.Group>
+            </>
+          )}
         </div>
       </div>
       <Divider className="divider-horizontal divider-horizontal-custom" />
@@ -145,10 +280,7 @@ export const SearchBar = ({
         <div className="search-bottom-left"></div>
         <div className="search-bottom-right">
           <Button type="primary" onClick={() => setModal(!modal)}>
-            Raise Ticket
-          </Button>
-          <Button type="primary" onClick={() => setModal(!modal)}>
-            Add Agent
+            Create {isTicketsPage ? "Ticket" : "Agent"}
           </Button>
         </div>
       </div>

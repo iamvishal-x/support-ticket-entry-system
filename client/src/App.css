@@ -10,12 +10,11 @@
 .app-sidebar {
   width: 10%;
   border-right: 2px solid #f4f5f7;
-  margin-block: 1rem;
+  margin-top: 1rem;
 }
 
 .app-container {
   width: 90%;
-  /* background-color: #EEEEFF; */
   padding: 2rem;
   height: 100vh;
   overflow: scroll;
@@ -26,7 +25,6 @@
 }
 
 .divider-horizontal-custom {
-  margin-inline: 1rem;
   width: auto;
   min-width: auto;
 }

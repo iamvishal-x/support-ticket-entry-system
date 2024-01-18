@@ -1,0 +1,9 @@
+.create-agent > p{
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    text-transform: capitalize;
+    letter-spacing: 1px;
+    color: #515c67
+}
+

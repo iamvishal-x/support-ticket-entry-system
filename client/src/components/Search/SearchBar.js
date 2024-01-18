@@ -27,6 +27,8 @@ export const SearchBar = ({
   homepageContent,
   ticketsViewType,
   setTicketsViewType,
+  modal,
+  setModal,
 }) => {
   const isTicketsPage = homepageContent === SidebarNavigationOptions.tickets;
   const dropdownFilters = TicketsAvailableDropDownFilters;
@@ -46,10 +48,10 @@ export const SearchBar = ({
   const initFilter = () => {};
 
   return (
-    <>
-      <div className="search">
-        <div className="search-left">
-          <div className="search-left-searchbar">
+    <div className="search">
+      <div className="search-top">
+        <div className="search-top-left">
+          <div className="search-top-left-searchbar">
             <Space.Compact>
               <Select
                 defaultValue={searchByFilters[0].value}
@@ -61,7 +63,7 @@ export const SearchBar = ({
             </Space.Compact>
           </div>
 
-          <div className="search-left-filters">
+          <div className="search-top-left-filters">
             {dropdownFilters.map((filter) => (
               <>
                 <Divider className="divider-vertical" type="vertical" />
@@ -102,11 +104,11 @@ export const SearchBar = ({
             </Tooltip>
           </div>
         </div>
-        <div className="search-right">
+        <div className="search-top-right">
           <Space.Compact>
             <Input
               placeholder="Sort By"
-              className="search-right-sort"
+              className="search-top-right-sort"
               disabled
             />
             <Select
@@ -139,6 +141,17 @@ export const SearchBar = ({
         </div>
       </div>
       <Divider className="divider-horizontal divider-horizontal-custom" />
-    </>
+      <div className="search-bottom">
+        <div className="search-bottom-left"></div>
+        <div className="search-bottom-right">
+          <Button type="primary" onClick={() => setModal(!modal)}>
+            Raise Ticket
+          </Button>
+          <Button type="primary" onClick={() => setModal(!modal)}>
+            Add Agent
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 };

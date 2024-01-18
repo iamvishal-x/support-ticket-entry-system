@@ -1,28 +1,42 @@
 .search {
-    margin: 1rem;   
+    margin: 1rem;
+}
+
+.search-top {
     display: flex;
     justify-content: space-between;
 }
 
-.search-left{
+.search-top-left{
     display: flex;
     align-items: center;
 
 }
-.search-right {
+.search-top-right {
     
 
 }
 
-.search-right-sort {
+.search-top-right-sort {
 
     width: auto;
     text-align: end;
     border-color: transparent;
     background-color:transparent;
 }
-.search-right-sort:disabled{
+.search-top-right-sort:disabled{
     border-color: transparent;
     background-color:transparent;
     cursor: auto;
+}
+
+
+.search-bottom {
+    display: flex;
+    justify-content: space-between;
+}
+
+.search-bottom-right {
+    display: flex;
+    align-items: end;
 }

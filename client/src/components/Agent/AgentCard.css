@@ -5,7 +5,7 @@
     background-color: white;
     border-radius: 6px;
     padding: 1rem; 
-    box-shadow: 5px 2px 6px 0px #d4d4d4a8;
+    box-shadow: -1px 0px 6px 0px #d4d4d4a8;
 }
 .agent-card > div:not(:last-child) {
     margin-bottom: 1rem;

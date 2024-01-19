@@ -1,11 +1,13 @@
 export const SupportTicketsEndpoint = "/support-tickets";
 export const SupportAgentsEndpoint = "/support-agents";
+
 export const AxiosMethods = {
   GET: "GET",
   POST: "POST",
   PATCH: "PATCH",
   DELETE: "DELETE",
 };
+
 export const SidebarNavigationOptions = {
   tickets: "tickets",
   agents: "agents",
@@ -26,13 +28,11 @@ export const TicketsAvailableStatus = [
   { label: "Assigned", key: "assigned" },
   { label: "Resolved", key: "resolved" },
 ];
-
 export const TicketsAvailableSeverity = [
   { label: "Low", key: "low" },
   { label: "Medium", key: "medium" },
   { label: "High", key: "high" },
 ];
-
 export const TicketsAvailableType = [
   { label: "Bug", key: "bug" },
   { label: "Feature", key: "feature" },
@@ -67,7 +67,6 @@ export const TicketsAvailableSortByOptions = [
   { label: "Resolved On Desc", value: "resolvedOnDesc" },
   { label: "Resolved On Asc", value: "resolvedOnAsc" },
 ];
-
 export const AgentsAvailableSortByOptions = [
   { label: "Created At Desc", value: "createdAtDesc" },
   { label: "Created At Asc", value: "createdAtAsc" },

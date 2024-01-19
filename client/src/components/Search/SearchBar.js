@@ -35,17 +35,17 @@ export const SearchBar = ({
   fetchDocuments,
   agents,
 }) => {
-  const isTicketsPage = homepageContent === SidebarNavigationOptions.tickets;
-  const dropdownFilters = TicketsAvailableDropDownFilters;
+  const isTicketsPage = homepageContent === SidebarNavigationOptions.tickets; // To check if current homepage is Ticket
 
-  const sortByFilters = isTicketsPage
+  const sortByFilters = isTicketsPage // Accordingly update sort by filters
     ? TicketsAvailableSortByOptions
     : AgentsAvailableSortByOptions;
 
-  const searchByFilters = isTicketsPage
+  const searchByFilters = isTicketsPage // Accordingly update search by filters
     ? TicketsAvailableSearchBy
     : AgentsAvailableSearchBy;
 
+  // Create a default filters value object which'll help in state reset as well
   const defaultFilterObject = {
     tickets: {
       searchBy: searchByFilters[0].value,
@@ -68,8 +68,8 @@ export const SearchBar = ({
 
   /**
    * Function to update filterObject state with new values
-   * @param {*} name name of the field
-   * @param {*} value value of the gield
+   * @param name name of the field
+   * @param value value of the gield
    */
   const updateFilterObject = (name, value) => {
     setFilterObject((prevFilterObject) => {
@@ -93,7 +93,7 @@ export const SearchBar = ({
   };
 
   /**
-   * Reset the state whenever home view changes
+   * Reset the filters state to default filter state whenever homepage changes
    */
   useEffect(() => {
     setFilterObject(defaultFilterObject);
@@ -140,8 +140,8 @@ export const SearchBar = ({
   };
 
   /**
-   * Function to search and filter agents with the given value
-   * @param {*} value agent name
+   * Function to search and filter agents with the given user input
+   * @param value agent name
    */
   const getAgentsArray = async (value) => {
     const queryString = `${SupportAgentsEndpoint}?searchBy="name"&search=${value}`;
@@ -158,7 +158,6 @@ export const SearchBar = ({
       <div className="search-top">
         <div className="search-top-left">
           <div className="search-top-left-searchbar">
-            {JSON.stringify(filterObject["status"])}
             <Space.Compact>
               <Select
                 defaultValue={getDefaultValue("searchBy")}
@@ -176,7 +175,7 @@ export const SearchBar = ({
 
           {isTicketsPage && (
             <div className="search-top-left-filters">
-              {dropdownFilters.map((filter) => (
+              {TicketsAvailableDropDownFilters.map((filter) => (
                 <span key={filter.value}>
                   <Divider className="divider-vertical" type="vertical" />
                   <Dropdown

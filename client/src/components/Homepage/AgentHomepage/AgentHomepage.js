@@ -3,7 +3,6 @@ import "./AgentHomepage.css";
 import { AgentCard } from "../../Agent/AgentCard";
 
 export const AgentHomepage = ({ agents, openNotification, setRefreshData }) => {
-  console.log("agents--", agents);
   return (
     <div className="homepage-agent-container">
       <div className="homepage-agent-container-grid">

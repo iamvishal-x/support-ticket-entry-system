@@ -17,56 +17,38 @@ import { CreateAgent } from "./components/Agent/CreateAgent/CreateAgent.js";
 import { CreateTicket } from "./components/Ticket/CreateTicket/CreateTicket.js";
 
 function App() {
+  // Current Tickets View Type: Kanban | List
   const [ticketsViewType, setTicketsViewType] = useState(
     TicketsViewOptions.kanban
   );
+
+  // Current Homepage: Tickets | Agents
   const [homepageContent, setHomepageContent] = useState(
     SidebarNavigationOptions.tickets
   );
 
   const [tickets, setTickets] = useState([]);
-  const [ticketsResponse, setTicketsResponse] = useState({});
   const [agents, setAgents] = useState([]);
-  const [agentsResponse, setAgentsResponse] = useState({});
   const [modal, setModal] = useState(false);
-  const [refreshData, setRefreshData] = useState(true);
+  const [refreshData, setRefreshData] = useState(true); // To update agents and tickets list
 
-  const [api, contextHolder] = notification.useNotification();
+  const [api, contextHolder] = notification.useNotification(); // Ant Desging notification api
 
   const fetchDocuments = async (method, endpoint, context) => {
     try {
-      console.log("inside fetch", endpoint);
       const response = await ApiRequest(method, endpoint);
 
       if (context === "tickets") {
-        setTicketsResponse({ response }); // Set tickets response directly
         setTickets(response.data); // Set tickets state directly
       } else {
-        setAgentsResponse({ response }); // Set agents response directly
         setAgents(response.data); // Set agents state directly
       }
     } catch (error) {
-      console.log("appp------", error);
       openNotification(error.message, "error");
     }
   };
 
-  const setContextData = (context, response) => {
-    if (context === "tickets") {
-      setTicketsResponse((prev) => {
-        return { ...prev, response };
-      });
-      setTickets(response.data);
-    } else {
-      setAgentsResponse((prev) => {
-        return { ...prev, response };
-      });
-      setAgents((prev) => {
-        return [...prev, ...response.data];
-      });
-    }
-  };
-
+  // Fetch documents on page load and whenever requested
   useEffect(() => {
     if (!refreshData) return;
     fetchDocuments(
@@ -82,10 +64,12 @@ function App() {
     setRefreshData(false);
   }, [refreshData]);
 
+  // Updates homepage content to selected route Agents | Tickets
   const updateHomepageContent = (type) => {
     return setHomepageContent(type);
   };
 
+  // Ant Design notification popup function
   const openNotification = (description, type) => {
     api[type]({
       message: type.toUpperCase(),
@@ -98,14 +82,15 @@ function App() {
 
   return (
     <>
+      {/* Using Ant Desing Config Provider to update disabled text color */}
       <ConfigProvider
         theme={{
           token: {
             colorTextQuaternary: "#000000e0",
-            // colorBgContainerDisabled: "#fff",
           },
         }}
       >
+        {/* Ant Desing notification UI */}
         {contextHolder}
         <div className="app">
           <div className="app-sidebar">

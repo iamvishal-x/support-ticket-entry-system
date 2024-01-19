@@ -1,7 +1,7 @@
 import { TicketCard } from "../../Ticket/TicketCard";
 import "./TicketHomepage.css";
 import React from "react";
-import { TicketsViewOptions } from "../../../Constants";
+import { TicketsAvailableStatus, TicketsViewOptions } from "../../../Constants";
 
 export const TicketHomepage = ({
   ticketsViewType,
@@ -9,8 +9,8 @@ export const TicketHomepage = ({
   openNotification,
   setRefreshData,
 }) => {
-  console.log("tickets--", tickets);
-  const ticketStatus = ["new", "assigned", "resolved"];
+  const ticketStatus = TicketsAvailableStatus.map((status) => status.key);
+
   return (
     <>
       {/* Kanban View */}

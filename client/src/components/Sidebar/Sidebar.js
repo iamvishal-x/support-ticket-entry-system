@@ -5,7 +5,7 @@ import { SidebarNavigationOptions } from "../../Constants";
 export const Sidebar = ({ homepageContent, updateHomepageContent }) => {
   return (
     <div className="sidebar">
-      {Object.keys(SidebarNavigationOptions)?.map((key) => (
+      {Object.keys(SidebarNavigationOptions).map((key) => (
         <p
           onClick={() => {
             updateHomepageContent(key);

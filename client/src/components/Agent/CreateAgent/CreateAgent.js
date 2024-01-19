@@ -5,8 +5,13 @@ import { AxiosMethods, SupportAgentsEndpoint } from "../../../Constants";
 import ApiRequest from "../../../utils/ApiRequest";
 
 export const CreateAgent = ({ setModal, setRefreshData, openNotification }) => {
+  // Uses Ant Design input fields
   const [form] = Form.useForm();
 
+  /**
+   * Gets the field values, filters out values, and raised a new ticket, if successfull, refreshes the list and closes the modal
+   * @param {Object} values
+   */
   const handleAgentCreation = async (values) => {
     try {
       const filteredObject = Object.keys(values).reduce((acc, curr) => {
@@ -26,7 +31,6 @@ export const CreateAgent = ({ setModal, setRefreshData, openNotification }) => {
         handleModalExit();
       }
     } catch (error) {
-      console.log("creation agent------", error);
       openNotification(error.message, "error");
     }
   };

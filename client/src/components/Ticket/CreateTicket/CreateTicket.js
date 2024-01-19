@@ -9,8 +9,13 @@ export const CreateTicket = ({
   setRefreshData,
   openNotification,
 }) => {
+  // Uses Ant Design input fields
   const [form] = Form.useForm();
 
+  /**
+   * Gets the field values, filters out values, and raised a new ticket, if successfull, refreshes the list and closes the modal
+   * @param {Object} values
+   */
   const handleTicketCreation = async (values) => {
     try {
       const filteredObject = Object.keys(values).reduce((acc, curr) => {

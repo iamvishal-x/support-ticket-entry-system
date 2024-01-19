@@ -28,21 +28,28 @@ export const TicketCard = ({
   setRefreshData,
 }) => {
   const [form] = Form.useForm();
-  const colorList = ["#f56a00", "#7265e6", "#ffbf00", "#00a2ae"];
-  const [formEditing, setFormEditing] = useState(false);
-  const [initialValues, setInitialValues] = useState({
-    topic: topic,
-    description: description,
-    severity: severity,
-    type: type,
-    assignedTo: assignedTo,
-    status: status,
-    resolvedOn: resolvedOn,
-    createdAt: createdAt,
-    updatedAt: updatedAt,
-    id: id,
-  });
+  const colorList = {
+    new: "#fc7303",
+    assigned: "#030ffc",
+    resolved: "#1bc508",
+  };
 
+  // Initial values for all the fields received from api
+  const initialValues = {
+    topic,
+    description,
+    severity,
+    type,
+    assignedTo,
+    status,
+    resolvedOn,
+    createdAt,
+    updatedAt,
+    id,
+  };
+  const [formEditing, setFormEditing] = useState(false); // Tells if form is in editing state or not
+
+  // Handles call to action buttons functionality
   const handleActionButton = async (action) => {
     switch (action) {
       case "Cancel":
@@ -63,6 +70,10 @@ export const TicketCard = ({
     }
   };
 
+  /**
+   * Gets the field values and updates the ticket, if successful, refreshes the list and disable the editing state
+   * @param {Object} values
+   */
   const handleUpdate = async (values) => {
     try {
       const response = await ApiRequest(
@@ -127,7 +138,7 @@ export const TicketCard = ({
           <div className="ticket-card-top-col-2">
             <Avatar
               style={{
-                backgroundColor: "red",
+                backgroundColor: colorList[status],
                 verticalAlign: "middle",
               }}
               size="medium"

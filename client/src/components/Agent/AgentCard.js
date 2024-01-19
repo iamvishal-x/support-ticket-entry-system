@@ -21,14 +21,19 @@ export const AgentCard = ({
 }) => {
   const [form] = Form.useForm();
   const colorList = ["#f56a00", "#7265e6", "#ffbf00", "#00a2ae"];
-  const [formEditing, setFormEditing] = useState(false);
-  const [initialValues, setInitialValues] = useState({
-    name: name,
-    active: active,
-    description: description,
-    phone: phone,
-    email: email,
-  });
+
+  // Initial values for all the fields received from api
+  const initialValues = {
+    name,
+    active,
+    description,
+    phone,
+    email,
+  };
+
+  const [formEditing, setFormEditing] = useState(false); // Tells if form is in editing state or not
+
+  // Handles call to action buttons functionality
   const handleActionButton = (action) => {
     switch (action) {
       case "Cancel":
@@ -45,6 +50,10 @@ export const AgentCard = ({
     }
   };
 
+  /**
+   * Gets the field values and updates the agent details, if successful, refreshes the list and disable the editing state
+   * @param {Object} values
+   */
   const handleUpdate = async (values) => {
     try {
       const response = await ApiRequest(

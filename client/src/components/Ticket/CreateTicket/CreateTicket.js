@@ -2,7 +2,7 @@ import "./CreateTicket.css";
 import React from "react";
 import { Button, Form, Input, Radio, Space } from "antd";
 import ApiRequest from "../../../utils/ApiRequest";
-import { AxiosMethods, SupportTicketsEndpoint } from "../../../Constants";
+import CONSTANTS from "../../../Constants";
 
 export const CreateTicket = ({
   setModal,
@@ -26,8 +26,8 @@ export const CreateTicket = ({
       }, {});
 
       const response = await ApiRequest(
-        AxiosMethods.POST,
-        SupportTicketsEndpoint,
+        CONSTANTS.AxiosMethods.POST,
+        CONSTANTS.SupportTicketsEndpoint,
         filteredObject
       );
 

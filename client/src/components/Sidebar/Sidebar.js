@@ -1,11 +1,11 @@
 import React from "react";
 import "./Sidebar.css";
-import { SidebarNavigationOptions } from "../../Constants";
+import CONSTANTS from "../../Constants";
 
 export const Sidebar = ({ homepageContent, updateHomepageContent }) => {
   return (
     <div className="sidebar">
-      {Object.keys(SidebarNavigationOptions).map((key) => (
+      {Object.keys(CONSTANTS.SidebarNavigationOptions).map((key) => (
         <p
           onClick={() => {
             updateHomepageContent(key);

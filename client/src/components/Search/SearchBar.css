@@ -10,8 +10,17 @@
 .search-top-left{
     display: flex;
     align-items: center;
-
 }
+.search-top-left-filters{
+    display: flex;
+    align-items: center;
+}
+
+.search-top-left-filters-dropdowns {
+    display: flex;
+    align-items: center;
+}
+
 .search-top-right {
     
 
@@ -38,7 +47,7 @@
 }
 
 .search-bottom-left {
-    width: 90%;
+    width: 100%;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -72,5 +81,8 @@
 
 .search-bottom-right {
     display: flex;
-    align-items: end;
+    width: 50%;
+    justify-content: end;
+    gap: 1rem;
+    flex-wrap: nowrap;
 }

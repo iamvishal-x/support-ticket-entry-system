@@ -2,13 +2,7 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import { TicketHomepage } from "./components/Homepage/TicketHomepage/TicketHomepage";
 import ApiRequest from "./utils/ApiRequest";
-import {
-  AxiosMethods,
-  SupportTicketsEndpoint,
-  SupportAgentsEndpoint,
-  SidebarNavigationOptions,
-  TicketsViewOptions,
-} from "./Constants.js";
+import CONSTANTS from "./Constants.js";
 import { Sidebar } from "./components/Sidebar/Sidebar.js";
 import { AgentHomepage } from "./components/Homepage/AgentHomepage/AgentHomepage.js";
 import { SearchBar } from "./components/Search/SearchBar.js";
@@ -19,12 +13,12 @@ import { CreateTicket } from "./components/Ticket/CreateTicket/CreateTicket.js";
 function App() {
   // Current Tickets View Type: Kanban | List
   const [ticketsViewType, setTicketsViewType] = useState(
-    TicketsViewOptions.kanban
+    CONSTANTS.TicketsViewOptions.kanban
   );
 
   // Current Homepage: Tickets | Agents
   const [homepageContent, setHomepageContent] = useState(
-    SidebarNavigationOptions.tickets
+    CONSTANTS.SidebarNavigationOptions.tickets
   );
 
   const [tickets, setTickets] = useState([]);
@@ -52,14 +46,14 @@ function App() {
   useEffect(() => {
     if (!refreshData) return;
     fetchDocuments(
-      AxiosMethods.GET,
-      SupportTicketsEndpoint,
-      SidebarNavigationOptions.tickets
+      CONSTANTS.AxiosMethods.GET,
+      CONSTANTS.SupportTicketsEndpoint,
+      CONSTANTS.SidebarNavigationOptions.tickets
     );
     fetchDocuments(
-      AxiosMethods.GET,
-      SupportAgentsEndpoint,
-      SidebarNavigationOptions.agents
+      CONSTANTS.AxiosMethods.GET,
+      CONSTANTS.SupportAgentsEndpoint,
+      CONSTANTS.SidebarNavigationOptions.agents
     );
     setRefreshData(false);
   }, [refreshData]);
@@ -84,6 +78,7 @@ function App() {
     <>
       {/* Using Ant Desing Config Provider to update disabled text color */}
       <ConfigProvider
+        componentSize="medium"
         theme={{
           token: {
             colorTextQuaternary: "#000000e0",
@@ -115,7 +110,7 @@ function App() {
               openNotification={openNotification}
             />
 
-            {homepageContent === SidebarNavigationOptions.tickets ? (
+            {homepageContent === CONSTANTS.SidebarNavigationOptions.tickets ? (
               <TicketHomepage
                 ticketsViewType={ticketsViewType}
                 tickets={tickets}
@@ -136,7 +131,8 @@ function App() {
               footer={null}
               onCancel={() => setModal(false)}
             >
-              {homepageContent === SidebarNavigationOptions.tickets ? (
+              {homepageContent ===
+              CONSTANTS.SidebarNavigationOptions.tickets ? (
                 <CreateTicket
                   setModal={setModal}
                   setRefreshData={setRefreshData}

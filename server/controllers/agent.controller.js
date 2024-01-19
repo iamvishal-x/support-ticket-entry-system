@@ -9,6 +9,7 @@ require("dotenv/config.js");
 
 const ALLOW_AGENT_DEACTIVATE_OR_DELETE_IF_HAS_TICKETS =
   process.env.ALLOW_AGENT_DEACTIVATE_OR_DELETE_IF_HAS_TICKETS === "true";
+
 /**
  * Create a new agent
  * */

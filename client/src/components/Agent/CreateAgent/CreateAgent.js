@@ -1,7 +1,7 @@
 import React from "react";
 import "./CreateAgent.css";
-import { Button, Form, Input, InputNumber, Radio, Space } from "antd";
-import { AxiosMethods, SupportAgentsEndpoint } from "../../../Constants";
+import { Button, Form, Input, Radio, Space } from "antd";
+import CONSTANT from "../../../Constants";
 import ApiRequest from "../../../utils/ApiRequest";
 
 export const CreateAgent = ({ setModal, setRefreshData, openNotification }) => {
@@ -22,8 +22,8 @@ export const CreateAgent = ({ setModal, setRefreshData, openNotification }) => {
       }, {});
 
       const response = await ApiRequest(
-        AxiosMethods.POST,
-        SupportAgentsEndpoint,
+        CONSTANT.AxiosMethods.POST,
+        CONSTANT.SupportAgentsEndpoint,
         filteredObject
       );
 

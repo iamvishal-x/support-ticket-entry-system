@@ -1,21 +1,21 @@
-export const SupportTicketsEndpoint = "/support-tickets";
-export const SupportAgentsEndpoint = "/support-agents";
+const SupportTicketsEndpoint = "/support-tickets";
+const SupportAgentsEndpoint = "/support-agents";
 
-export const AxiosMethods = {
+const AxiosMethods = {
   GET: "GET",
   POST: "POST",
   PATCH: "PATCH",
   DELETE: "DELETE",
 };
 
-export const SidebarNavigationOptions = {
+const SidebarNavigationOptions = {
   tickets: "tickets",
   agents: "agents",
 };
-export const TicketsViewOptions = { list: "list", kanban: "kanban" };
+const TicketsViewOptions = { list: "list", kanban: "kanban" };
 
-export const TicketsAvailableSearchBy = [{ label: "Search All", value: "" }];
-export const AgentsAvailableSearchBy = [
+const TicketsAvailableSearchBy = [{ label: "Search All", value: "" }];
+const AgentsAvailableSearchBy = [
   { label: "Search All", value: "" },
   { label: "Name", value: "name" },
   { label: "Email", value: "email" },
@@ -23,23 +23,23 @@ export const AgentsAvailableSearchBy = [
   { label: "Phone", value: "phone" },
 ];
 
-export const TicketsAvailableStatus = [
+const TicketsAvailableStatus = [
   { label: "New", key: "new" },
   { label: "Assigned", key: "assigned" },
   { label: "Resolved", key: "resolved" },
 ];
-export const TicketsAvailableSeverity = [
+const TicketsAvailableSeverity = [
   { label: "Low", key: "low" },
   { label: "Medium", key: "medium" },
   { label: "High", key: "high" },
 ];
-export const TicketsAvailableType = [
+const TicketsAvailableType = [
   { label: "Bug", key: "bug" },
   { label: "Feature", key: "feature" },
   { label: "Enhancement", key: "enhancement" },
 ];
 
-export const TicketsAvailableDropDownFilters = [
+const TicketsAvailableDropDownFilters = [
   {
     label: "Status",
     value: "status",
@@ -57,7 +57,7 @@ export const TicketsAvailableDropDownFilters = [
   },
 ];
 
-export const TicketsAvailableSortByOptions = [
+const TicketsAvailableSortByOptions = [
   { label: "Created At Desc", value: "createdAtDesc" },
   { label: "Created At Asc", value: "createdAtAsc" },
   { label: "Updated At Desc", value: "updatedAtDesc" },
@@ -67,7 +67,7 @@ export const TicketsAvailableSortByOptions = [
   { label: "Resolved On Desc", value: "resolvedOnDesc" },
   { label: "Resolved On Asc", value: "resolvedOnAsc" },
 ];
-export const AgentsAvailableSortByOptions = [
+const AgentsAvailableSortByOptions = [
   { label: "Created At Desc", value: "createdAtDesc" },
   { label: "Created At Asc", value: "createdAtAsc" },
   { label: "Updated At Desc", value: "updatedAtDesc" },
@@ -77,3 +77,19 @@ export const AgentsAvailableSortByOptions = [
   { label: "Active Desc", value: "activeDesc" },
   { label: "Active Asc", value: "activeAsc" },
 ];
+
+export default {
+  SupportTicketsEndpoint,
+  SupportAgentsEndpoint,
+  AxiosMethods,
+  SidebarNavigationOptions,
+  TicketsViewOptions,
+  TicketsAvailableSearchBy,
+  AgentsAvailableSearchBy,
+  TicketsAvailableStatus,
+  TicketsAvailableSeverity,
+  TicketsAvailableType,
+  TicketsAvailableDropDownFilters,
+  TicketsAvailableSortByOptions,
+  AgentsAvailableSortByOptions,
+};

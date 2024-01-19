@@ -2,10 +2,9 @@ import { Avatar, Button, Form, Input, Switch } from "antd";
 import "./AgentCard.css";
 
 import React, { useState } from "react";
-import TextArea from "antd/es/input/TextArea";
-import { CheckOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import ApiRequest from "../../utils/ApiRequest";
-import { AxiosMethods, SupportAgentsEndpoint } from "../../Constants";
+import CONSTANTS from "../../Constants";
 
 export const AgentCard = ({
   name,
@@ -61,8 +60,8 @@ export const AgentCard = ({
   const handleUpdate = async (values) => {
     try {
       const response = await ApiRequest(
-        AxiosMethods.PATCH,
-        SupportAgentsEndpoint + "/" + id,
+        CONSTANTS.AxiosMethods.PATCH,
+        CONSTANTS.SupportAgentsEndpoint + "/" + id,
         values
       );
 
@@ -82,8 +81,8 @@ export const AgentCard = ({
   const handleDelete = async () => {
     try {
       const response = await ApiRequest(
-        AxiosMethods.DELETE,
-        SupportAgentsEndpoint + "/" + id
+        CONSTANTS.AxiosMethods.DELETE,
+        CONSTANTS.SupportAgentsEndpoint + "/" + id
       );
       if (response && response.success) {
         setRefreshData(true);

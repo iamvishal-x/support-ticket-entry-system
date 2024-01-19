@@ -1,5 +1,5 @@
 .agent-card {
-    min-width: 400px;
+    /* min-width: 400px; */
     min-height: 200px;
     max-width: 600px;   
     background-color: white;
@@ -63,6 +63,7 @@
 
 .agent-card-top-col-2-row-2 > div.ant-form-item {
     margin: 0;
+    width: 45%;
 }
 
 .agent-card-mid > div.ant-form-item {
@@ -75,10 +76,10 @@
     gap: 1rem;
 }
 
-.agent-card-bottom-row-1 {
+/* .agent-card-bottom-row-1 {
     display: flex;
     justify-content: space-between;
-}
+} */
 
 .agent-card-bottom-row-1> p {
     margin: 0;

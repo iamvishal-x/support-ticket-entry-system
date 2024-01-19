@@ -3,28 +3,15 @@ import "./SearchBar.css";
 import {
   Select,
   Space,
-  Spin,
   Radio,
   Input,
   Divider,
-  Typography,
   Dropdown,
   Button,
   Tooltip,
 } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import {
-  TicketsAvailableDropDownFilters,
-  SidebarNavigationOptions,
-  TicketsAvailableSortByOptions,
-  AgentsAvailableSortByOptions,
-  TicketsViewOptions,
-  TicketsAvailableSearchBy,
-  AgentsAvailableSearchBy,
-  SupportAgentsEndpoint,
-  SupportTicketsEndpoint,
-  AxiosMethods,
-} from "../../Constants.js";
+import CONSTANTS from "../../Constants.js";
 
 export const SearchBar = ({
   homepageContent,
@@ -35,15 +22,16 @@ export const SearchBar = ({
   fetchDocuments,
   agents,
 }) => {
-  const isTicketsPage = homepageContent === SidebarNavigationOptions.tickets; // To check if current homepage is Ticket
+  const isTicketsPage =
+    homepageContent === CONSTANTS.SidebarNavigationOptions.tickets; // To check if current homepage is Ticket
 
   const sortByFilters = isTicketsPage // Accordingly update sort by filters
-    ? TicketsAvailableSortByOptions
-    : AgentsAvailableSortByOptions;
+    ? CONSTANTS.TicketsAvailableSortByOptions
+    : CONSTANTS.AgentsAvailableSortByOptions;
 
   const searchByFilters = isTicketsPage // Accordingly update search by filters
-    ? TicketsAvailableSearchBy
-    : AgentsAvailableSearchBy;
+    ? CONSTANTS.TicketsAvailableSearchBy
+    : CONSTANTS.AgentsAvailableSearchBy;
 
   // Create a default filters value object which'll help in state reset as well
   const defaultFilterObject = {
@@ -115,8 +103,8 @@ export const SearchBar = ({
     const data = filterObject[homepageContent];
 
     let queryEndpoint = isTicketsPage
-      ? SupportTicketsEndpoint
-      : SupportAgentsEndpoint;
+      ? CONSTANTS.SupportTicketsEndpoint
+      : CONSTANTS.SupportAgentsEndpoint;
 
     let queryString = "";
 
@@ -131,8 +119,6 @@ export const SearchBar = ({
 
       if (key === "searchBy" && !data.search) return;
 
-      console.log("active", activeFilters, key, value);
-      // setActiveFilters({ [key]: value.join(",") });
       queryString += `&${key}=${value}`;
     });
 
@@ -149,7 +135,7 @@ export const SearchBar = ({
       setActiveFilters({});
     }
 
-    fetchDocuments(AxiosMethods.GET, queryEndpoint, homepageContent);
+    fetchDocuments(CONSTANTS.AxiosMethods.GET, queryEndpoint, homepageContent);
   };
 
   /**
@@ -157,12 +143,12 @@ export const SearchBar = ({
    * @param value agent name
    */
   const getAgentsArray = async (value) => {
-    const queryString = `${SupportAgentsEndpoint}?searchBy="name"&search=${value}`;
+    const queryString = `${CONSTANTS.SupportAgentsEndpoint}?searchBy="name"&search=${value}`;
 
     await fetchDocuments(
-      AxiosMethods.GET,
+      CONSTANTS.AxiosMethods.GET,
       queryString,
-      SidebarNavigationOptions.agents
+      CONSTANTS.SidebarNavigationOptions.agents
     );
   };
 
@@ -194,8 +180,11 @@ export const SearchBar = ({
 
           {isTicketsPage && (
             <div className="search-top-left-filters">
-              {TicketsAvailableDropDownFilters.map((filter) => (
-                <span key={filter.value}>
+              {CONSTANTS.TicketsAvailableDropDownFilters.map((filter) => (
+                <div
+                  className="search-top-left-filters-dropdowns"
+                  key={filter.value}
+                >
                   <Divider className="divider-vertical" type="vertical" />
                   <Dropdown
                     menu={{
@@ -225,39 +214,41 @@ export const SearchBar = ({
                       </Button>
                     </Tooltip>
                   </Dropdown>
-                </span>
+                </div>
               ))}
-              <Divider className="divider-vertical" type="vertical" />
-              <Tooltip
-                placement="top"
-                arrow={false}
-                title="Filter by multiple agent"
-                key="assignedTo"
-              >
-                <Select
-                  mode="multiple"
-                  maxTagCount="responsive"
-                  maxCount={3}
-                  style={{ width: "200px" }}
-                  value={getCurrentValue("assignedTo")}
-                  options={agents.map((agent) => {
-                    return {
-                      label: agent.name,
-                      value: agent._id,
-                    };
-                  })}
-                  onSearch={async (e) => await getAgentsArray(e)}
-                  onChange={(newValue) => {
-                    updateFilterObject("assignedTo", newValue);
-                  }}
-                  filterOption={(input, option) => {
-                    return option.label
-                      .toLowerCase()
-                      .includes(input.toLowerCase());
-                  }}
-                  placeholder="Filter by multiple agent"
-                />
-              </Tooltip>
+              <div className="search-top-left-filters-dropdowns">
+                <Divider className="divider-vertical" type="vertical" />
+                <Tooltip
+                  placement="top"
+                  arrow={false}
+                  title="Filter by multiple agent"
+                  key="assignedTo"
+                >
+                  <Select
+                    mode="multiple"
+                    maxTagCount="responsive"
+                    maxCount={3}
+                    style={{ width: "200px" }}
+                    value={getCurrentValue("assignedTo")}
+                    options={agents.map((agent) => {
+                      return {
+                        label: agent.name,
+                        value: agent._id,
+                      };
+                    })}
+                    onSearch={async (e) => await getAgentsArray(e)}
+                    onChange={(newValue) => {
+                      updateFilterObject("assignedTo", newValue);
+                    }}
+                    filterOption={(input, option) => {
+                      return option.label
+                        .toLowerCase()
+                        .includes(input.toLowerCase());
+                    }}
+                    placeholder="Filter by multiple agent"
+                  />
+                </Tooltip>
+              </div>
             </div>
           )}
         </div>
@@ -279,25 +270,6 @@ export const SearchBar = ({
               onChange={(e) => updateFilterObject("sortBy", e)}
             />
           </Space.Compact>
-          {isTicketsPage && (
-            <>
-              <Divider className="divider-vertical" type="vertical" />
-              <Radio.Group
-                value={ticketsViewType}
-                onChange={(e) => {
-                  setTicketsViewType(e.target.value);
-                }}
-                buttonStyle="solid"
-              >
-                <Radio.Button value={TicketsViewOptions.kanban}>
-                  Kanban View
-                </Radio.Button>
-                <Radio.Button value={TicketsViewOptions.list}>
-                  List View
-                </Radio.Button>
-              </Radio.Group>
-            </>
-          )}
         </div>
       </div>
       <Divider className="divider-horizontal divider-horizontal-custom" />
@@ -322,6 +294,24 @@ export const SearchBar = ({
           ))}
         </div>
         <div className="search-bottom-right">
+          {isTicketsPage && (
+            <>
+              <Radio.Group
+                value={ticketsViewType}
+                onChange={(e) => {
+                  setTicketsViewType(e.target.value);
+                }}
+                buttonStyle="solid"
+              >
+                <Radio.Button value={CONSTANTS.TicketsViewOptions.kanban}>
+                  Kanban View
+                </Radio.Button>
+                <Radio.Button value={CONSTANTS.TicketsViewOptions.list}>
+                  List View
+                </Radio.Button>
+              </Radio.Group>
+            </>
+          )}
           <Button type="primary" onClick={() => setModal(!modal)}>
             Create {isTicketsPage ? "Ticket" : "Agent"}
           </Button>

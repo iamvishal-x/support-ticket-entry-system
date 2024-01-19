@@ -3,14 +3,7 @@ import React, { useState } from "react";
 import { Avatar, Button, Form, Input, Select, Tooltip } from "antd";
 import { CheckOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
-import {
-  AxiosMethods,
-  SupportTicketsEndpoint,
-  TicketsAvailableDropDownFilters,
-  TicketsAvailableSeverity,
-  TicketsAvailableStatus,
-  TicketsAvailableType,
-} from "../../Constants";
+import CONSTANTS from "../../Constants";
 import ApiRequest from "../../utils/ApiRequest";
 
 export const TicketCard = ({
@@ -80,8 +73,8 @@ export const TicketCard = ({
   const handleUpdate = async (values) => {
     try {
       const response = await ApiRequest(
-        AxiosMethods.PATCH,
-        SupportTicketsEndpoint + "/" + id,
+        CONSTANTS.AxiosMethods.PATCH,
+        CONSTANTS.SupportTicketsEndpoint + "/" + id,
         values
       );
 
@@ -101,8 +94,8 @@ export const TicketCard = ({
   const handleDelete = async () => {
     try {
       const response = await ApiRequest(
-        AxiosMethods.DELETE,
-        SupportTicketsEndpoint + "/" + id
+        CONSTANTS.AxiosMethods.DELETE,
+        CONSTANTS.SupportTicketsEndpoint + "/" + id
       );
       if (response && response.success) {
         setRefreshData(true);
@@ -127,6 +120,7 @@ export const TicketCard = ({
         <div className="ticket-card-top">
           <div className="ticket-card-top-col-1">
             <Form.Item
+              className="ticket-card-top-col-1-item-1"
               name="topic"
               rules={[
                 {
@@ -151,13 +145,10 @@ export const TicketCard = ({
               <Input className="ticket-card-top-topic" variant="filled" />
             </Form.Item>
 
-            <Form.Item name="type">
+            <Form.Item name="type" className="ticket-card-top-col-1-item-2">
               <Select
-                style={{
-                  width: 130,
-                }}
                 className="ticket-card-top-type"
-                options={TicketsAvailableType.map((type) => {
+                options={CONSTANTS.TicketsAvailableType.map((type) => {
                   return { label: type.label, value: type.key };
                 })}
               />
@@ -213,7 +204,7 @@ export const TicketCard = ({
                     width: 130,
                   }}
                   className="ticket-card-bottom-severity"
-                  options={TicketsAvailableSeverity.map((type) => {
+                  options={CONSTANTS.TicketsAvailableSeverity.map((type) => {
                     return { label: type.label, value: type.key };
                   })}
                 />

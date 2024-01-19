@@ -41,11 +41,13 @@
 
 .ticket-card-top-col-1 {
     display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    width: 100%;
 }
-
+.ticket-card-top-col-1-item-1 {
+    width: 50%;
+}
+.ticket-card-top-col-2{
+    margin-left: 1rem;
+}
 .ticket-card-mid > div.ant-form-item{
     margin-right: 0;
 }

@@ -61,7 +61,11 @@
     gap: 1rem;
 }
 
-.agent-card-mid>div.ant-form-item {
+.agent-card-top-col-2-row-2 > div.ant-form-item {
+    margin: 0;
+}
+
+.agent-card-mid > div.ant-form-item {
     margin: 0;
 }
 

@@ -78,6 +78,34 @@ const AgentsAvailableSortByOptions = [
   { label: "Active Asc", value: "activeAsc" },
 ];
 
+const TicketsCreateValidation = {
+  topic: { min: 3, max: 100, type: "string", default: "" },
+  description: { max: 100, type: "string" },
+  severity: {
+    default: TicketsAvailableSeverity[0].key,
+    options: TicketsAvailableSeverity,
+    type: "string",
+  },
+  type: {
+    default: TicketsAvailableType[0].key,
+    options: TicketsAvailableType,
+    type: "string",
+  },
+  status: {
+    default: TicketsAvailableStatus[0].key,
+    options: TicketsAvailableStatus.map((x) => x.key === TicketsAvailableStatus[0].key),
+    type: "string",
+  },
+};
+
+const AgentsCreateValidation = {
+  name: { min: 2, max: 24, type: "string", default: "" },
+  email: { type: "email", default: "", max: 50 },
+  phone: { type: "string", max: 12, min: 8, default: "", pattern: /^[0-9]+$/ },
+  description: { max: 200, default: "", type: "string" },
+  active: { default: true, type: "boolean" },
+};
+
 export default {
   SupportTicketsEndpoint,
   SupportAgentsEndpoint,
@@ -92,4 +120,6 @@ export default {
   TicketsAvailableDropDownFilters,
   TicketsAvailableSortByOptions,
   AgentsAvailableSortByOptions,
+  TicketsCreateValidation,
+  AgentsCreateValidation,
 };

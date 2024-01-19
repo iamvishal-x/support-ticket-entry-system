@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import "./CreateAgent.css";
 import { Button, Form, Input, Radio, Space } from "antd";
-import CONSTANT from "../../../Constants";
+import CONSTANTS from "../../../Constants";
 import ApiRequest from "../../../utils/ApiRequest";
+import UTILITY from "../../../utils/utility";
 
 export const CreateAgent = ({ setModal, setRefreshData, openNotification }) => {
   // Uses Ant Design input fields
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
+  const initialValues = {
+    active: "true",
+  };
 
   /**
    * Gets the field values, filters out values, and raised a new ticket, if successfull, refreshes the list and closes the modal
@@ -16,16 +20,11 @@ export const CreateAgent = ({ setModal, setRefreshData, openNotification }) => {
   const handleAgentCreation = async (values) => {
     try {
       setIsLoading(true);
-      const filteredObject = Object.keys(values).reduce((acc, curr) => {
-        if (values[curr]) {
-          return { ...acc, [curr]: values[curr].trim() };
-        }
-        return acc;
-      }, {});
+      const filteredObject = UTILITY.filterAndTrim(values);
 
       const response = await ApiRequest(
-        CONSTANT.AxiosMethods.POST,
-        CONSTANT.SupportAgentsEndpoint,
+        CONSTANTS.AxiosMethods.POST,
+        CONSTANTS.SupportAgentsEndpoint,
         filteredObject
       );
 
@@ -54,15 +53,9 @@ export const CreateAgent = ({ setModal, setRefreshData, openNotification }) => {
         labelCol={{
           span: 5,
         }}
-        initialValues={{
-          ["active"]: "true",
-          ["description"]: "",
-          ["name"]: "",
-          ["phone"]: "",
-          ["email"]: "",
-        }}
+        initialValues={initialValues}
         onFinish={handleAgentCreation}
-        onFinishFailed={(e) => console.log("e---", e)}
+        onFinishFailed={(e) => console.log("error in agent--", e)}
         autoComplete="off"
       >
         <Form.Item
@@ -70,16 +63,11 @@ export const CreateAgent = ({ setModal, setRefreshData, openNotification }) => {
           name="name"
           rules={[
             {
+              type: CONSTANTS.AgentsCreateValidation.name.type,
               required: true,
-              message: "Please input your name!",
-            },
-            {
-              min: 2,
-              message: "Name should be of minimum 3 characters",
-            },
-            {
-              max: 24,
-              message: "Name cannot exceed 24 characters",
+              min: CONSTANTS.AgentsCreateValidation.name.min,
+              max: CONSTANTS.AgentsCreateValidation.name.max,
+              whitespace: true,
             },
           ]}
         >
@@ -91,16 +79,13 @@ export const CreateAgent = ({ setModal, setRefreshData, openNotification }) => {
           name="email"
           rules={[
             {
+              type: CONSTANTS.AgentsCreateValidation.email.type,
               required: true,
-              message: "Please input your email!",
+              whitespace: true,
+              max: CONSTANTS.AgentsCreateValidation.email.max,
             },
             {
-              max: 50,
-              message: "Email cannot exceed 50 characters",
-            },
-            {
-              type: "email",
-              message: "Email is not a valid email!",
+              message: "Max 50 characters allowed",
             },
           ]}
         >
@@ -111,17 +96,15 @@ export const CreateAgent = ({ setModal, setRefreshData, openNotification }) => {
           name="phone"
           rules={[
             {
+              type: CONSTANTS.AgentsCreateValidation.phone.type,
               required: true,
-              message: "Please input your phone!",
+              min: CONSTANTS.AgentsCreateValidation.phone.min,
+              max: CONSTANTS.AgentsCreateValidation.phone.max,
+              whitespace: true,
             },
             {
-              min: 8,
-              message: "Phone should be of minimum 8 digits",
-            },
-            {
-              max: 12,
-
-              message: "Phone should be of max 12 digits",
+              pattern: CONSTANTS.AgentsCreateValidation.phone.pattern,
+              message: "Invalid phone number",
             },
           ]}
         >
@@ -132,8 +115,9 @@ export const CreateAgent = ({ setModal, setRefreshData, openNotification }) => {
           name="description"
           rules={[
             {
-              max: 200,
-              message: "Description cannot exceed 200 characters",
+              type: CONSTANTS.AgentsCreateValidation.description.type,
+              max: CONSTANTS.AgentsCreateValidation.description.max,
+              whitespace: true,
             },
           ]}
         >
@@ -155,12 +139,7 @@ export const CreateAgent = ({ setModal, setRefreshData, openNotification }) => {
             <Button onClick={handleModalExit} disabled={isLoading}>
               Cancel
             </Button>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={isLoading}
-              disabled={isLoading}
-            >
+            <Button type="primary" htmlType="submit" loading={isLoading} disabled={isLoading}>
               Create Agent
             </Button>
           </Space>

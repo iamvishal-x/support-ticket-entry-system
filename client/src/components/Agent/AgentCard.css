@@ -1,5 +1,4 @@
 .agent-card {
-    /* min-width: 400px; */
     min-height: 200px;
     max-width: 600px;   
     background-color: white;
@@ -87,4 +86,8 @@
 .agent-card-bottom-row-2{
     display: flex;
     justify-content: space-between;
+}
+
+.agent-card-form {
+    display: block;
 }

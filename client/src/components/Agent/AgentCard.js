@@ -20,7 +20,6 @@ export const AgentCard = ({
 }) => {
   const [form] = Form.useForm();
   const colorList = ["#f56a00", "#7265e6", "#ffbf00", "#00a2ae"];
-
   // Initial values for all the fields received from api
   const initialValues = {
     name,
@@ -28,6 +27,13 @@ export const AgentCard = ({
     description,
     phone: String(phone),
     email,
+  };
+  const customValidateMessages = {
+    whitespace: "Blank character not allowed",
+    string: {
+      range: "Only ${min}-${max} characters allowed",
+    },
+    types: { email: "Invalid email" },
   };
 
   const [formEditing, setFormEditing] = useState(false); // Tells if form is in editing state or not
@@ -97,14 +103,14 @@ export const AgentCard = ({
   return (
     <Form
       form={form}
+      className="agent-card-form"
       name="update-agent"
       layout="inline"
+      validateMessages={customValidateMessages}
       initialValues={initialValues}
       onFinish={handleUpdate}
     >
-      <div
-        className={`agent-card agent-card-${active ? "active" : "inactive"}`}
-      >
+      <div className={`agent-card agent-card-${active ? "active" : "inactive"}`}>
         <div className="agent-card-top">
           <div className="agent-card-top-col-1">
             <Avatar
@@ -123,16 +129,11 @@ export const AgentCard = ({
                 name="name"
                 rules={[
                   {
+                    type: CONSTANTS.AgentsCreateValidation.name.type,
                     required: true,
-                    message: "Please input your name",
-                  },
-                  {
-                    min: 2,
-                    message: "Minimum 3 characters",
-                  },
-                  {
-                    max: 24,
-                    message: "Maximum 24 characters",
+                    min: CONSTANTS.AgentsCreateValidation.name.min,
+                    max: CONSTANTS.AgentsCreateValidation.name.max,
+                    whitespace: true,
                   },
                 ]}
               >
@@ -156,16 +157,13 @@ export const AgentCard = ({
                 name="email"
                 rules={[
                   {
+                    type: CONSTANTS.AgentsCreateValidation.email.type,
                     required: true,
-                    message: "Please input your email!",
+                    whitespace: true,
                   },
                   {
-                    max: 50,
-                    message: "Maximum exceed 50 characters",
-                  },
-                  {
-                    type: "email",
-                    message: "Email is not a valid email!",
+                    max: CONSTANTS.AgentsCreateValidation.email.max,
+                    message: "Max 50 characters allowed",
                   },
                 ]}
               >
@@ -175,16 +173,15 @@ export const AgentCard = ({
                 name="phone"
                 rules={[
                   {
-                    min: 8,
-                    message: "Minimum 8 digits",
-                  },
-                  {
-                    max: 12,
-                    message: "Max 12 digits",
-                  },
-                  {
+                    type: CONSTANTS.AgentsCreateValidation.phone.type,
                     required: true,
-                    message: "Enter phone",
+                    min: CONSTANTS.AgentsCreateValidation.phone.min,
+                    max: CONSTANTS.AgentsCreateValidation.phone.max,
+                    whitespace: true,
+                  },
+                  {
+                    pattern: CONSTANTS.AgentsCreateValidation.phone.pattern,
+                    message: "Invalid phone number",
                   },
                 ]}
               >
@@ -199,8 +196,9 @@ export const AgentCard = ({
             name="description"
             rules={[
               {
-                max: 200,
-                message: "Description cannot exceed 200 characters",
+                type: CONSTANTS.AgentsCreateValidation.description.type,
+                max: CONSTANTS.AgentsCreateValidation.description.max,
+                whitespace: true,
               },
             ]}
           >
@@ -225,18 +223,14 @@ export const AgentCard = ({
             <Button
               danger
               disabled={false}
-              onClick={() =>
-                handleActionButton(formEditing ? "Cancel" : "Delete")
-              }
+              onClick={() => handleActionButton(formEditing ? "Cancel" : "Delete")}
               icon={!formEditing && <DeleteOutlined />}
             >
               {formEditing ? "Cancel" : "Delete"}
             </Button>
             <Button
               disabled={false}
-              onClick={() =>
-                handleActionButton(formEditing ? "Update" : "Edit")
-              }
+              onClick={() => handleActionButton(formEditing ? "Update" : "Edit")}
               icon={!formEditing && <EditOutlined />}
             >
               {formEditing ? "Update" : "Edit"}

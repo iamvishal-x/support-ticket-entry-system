@@ -3,15 +3,18 @@ import React, { useState } from "react";
 import { Button, Form, Input, Radio, Space } from "antd";
 import ApiRequest from "../../../utils/ApiRequest";
 import CONSTANTS from "../../../Constants";
+import UTILITY from "../../../utils/utility";
 
-export const CreateTicket = ({
-  setModal,
-  setRefreshData,
-  openNotification,
-}) => {
+export const CreateTicket = ({ setModal, setRefreshData, openNotification }) => {
   // Uses Ant Design input fields
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
+  const initialValues = {
+    topic: "",
+    description: "",
+    severity: "low",
+    type: "bug",
+  };
   /**
    * Gets the field values, filters out values, and raised a new ticket, if successfull, refreshes the list and closes the modal
    * @param {Object} values
@@ -19,12 +22,7 @@ export const CreateTicket = ({
   const handleTicketCreation = async (values) => {
     try {
       setIsLoading(true);
-      const filteredObject = Object.keys(values).reduce((acc, curr) => {
-        if (values[curr]) {
-          return { ...acc, [curr]: values[curr].trim() };
-        }
-        return acc;
-      }, {});
+      const filteredObject = UTILITY.filterAndTrim(values);
 
       const response = await ApiRequest(
         CONSTANTS.AxiosMethods.POST,
@@ -36,7 +34,6 @@ export const CreateTicket = ({
         handleModalExit();
       }
     } catch (error) {
-      console.log("creation------", error);
       openNotification(error.message, "error");
     } finally {
       setIsLoading(false);
@@ -58,14 +55,9 @@ export const CreateTicket = ({
         labelCol={{
           span: 5,
         }}
-        initialValues={{
-          ["topic"]: "",
-          ["description"]: "",
-          ["severity"]: "low",
-          ["type"]: "bug",
-        }}
+        initialValues={initialValues}
         onFinish={handleTicketCreation}
-        onFinishFailed={(e) => console.log("e---", e)}
+        onFinishFailed={(e) => console.log("error in ticket--", e)}
         autoComplete="off"
       >
         <Form.Item
@@ -74,15 +66,10 @@ export const CreateTicket = ({
           rules={[
             {
               required: true,
-              message: "Please input your topic!",
-            },
-            {
-              min: 3,
-              message: "Topic should be of minimum 3 characters",
-            },
-            {
-              max: 100,
-              message: "Topic cannot exceed 100 characters",
+              type: CONSTANTS.TicketsCreateValidation.topic.type,
+              min: CONSTANTS.TicketsCreateValidation.topic.min,
+              max: CONSTANTS.TicketsCreateValidation.topic.max,
+              whitespace: true,
             },
           ]}
         >
@@ -94,8 +81,9 @@ export const CreateTicket = ({
           name="description"
           rules={[
             {
-              max: 200,
-              message: "Description cannot exceed 200 characters",
+              max: CONSTANTS.TicketsCreateValidation.description.max,
+              type: CONSTANTS.TicketsCreateValidation.description.type,
+              whitespace: true,
             },
           ]}
         >
@@ -104,17 +92,17 @@ export const CreateTicket = ({
 
         <Form.Item name="severity" label="Severity">
           <Radio.Group>
-            <Radio.Button value="low">Low</Radio.Button>
-            <Radio.Button value="medium">Medium</Radio.Button>
-            <Radio.Button value="high">High</Radio.Button>
+            {CONSTANTS.TicketsCreateValidation.severity.options.map((option) => (
+              <Radio.Button value={option.key}>{option.label}</Radio.Button>
+            ))}
           </Radio.Group>
         </Form.Item>
 
         <Form.Item name="type" label="Type">
           <Radio.Group>
-            <Radio.Button value="bug">Bug</Radio.Button>
-            <Radio.Button value="feature">Feature</Radio.Button>
-            <Radio.Button value="enhancement">Enhancement</Radio.Button>
+            {CONSTANTS.TicketsCreateValidation.type.options.map((option) => (
+              <Radio.Button value={option.key}>{option.label}</Radio.Button>
+            ))}
           </Radio.Group>
         </Form.Item>
 
@@ -128,12 +116,7 @@ export const CreateTicket = ({
             <Button disabled={isLoading} onClick={handleModalExit}>
               Cancel
             </Button>
-            <Button
-              type="primary"
-              disabled={isLoading}
-              htmlType="submit"
-              loading={isLoading}
-            >
+            <Button type="primary" disabled={isLoading} htmlType="submit" loading={isLoading}>
               Create Ticket
             </Button>
           </Space>

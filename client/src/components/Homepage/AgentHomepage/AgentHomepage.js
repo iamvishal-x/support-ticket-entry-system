@@ -7,19 +7,13 @@ export const AgentHomepage = ({ agents, openNotification, setRefreshData }) => {
   return (
     <div className="homepage-agent-container">
       {!agents || agents.length <= 0 ? (
-        <Empty description="No agents found" />
+        <Empty description="No agent found" />
       ) : (
         <div className="homepage-agent-container-grid">
           {agents.map((agent) => (
             <AgentCard
+              {...agent}
               key={agent._id}
-              name={agent.name}
-              email={agent.email}
-              phone={agent.phone}
-              description={agent.description}
-              active={agent.active}
-              createdAt={agent.createdAt}
-              updatedAt={agent.updatedAt}
               id={agent._id}
               openNotification={openNotification}
               setRefreshData={setRefreshData}

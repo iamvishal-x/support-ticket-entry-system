@@ -12,9 +12,7 @@ import { CreateTicket } from "./components/Ticket/CreateTicket/CreateTicket.js";
 
 function App() {
   // Current Tickets View Type: Kanban | List
-  const [ticketsViewType, setTicketsViewType] = useState(
-    CONSTANTS.TicketsViewOptions.kanban
-  );
+  const [ticketsViewType, setTicketsViewType] = useState(CONSTANTS.TicketsViewOptions.kanban);
 
   // Current Homepage: Tickets | Agents
   const [homepageContent, setHomepageContent] = useState(
@@ -35,9 +33,9 @@ function App() {
       const response = await ApiRequest(method, endpoint);
 
       if (context === "tickets") {
-        setTickets(response.data); // Set tickets state directly
+        setTickets(response.data);
       } else {
-        setAgents(response.data); // Set agents state directly
+        setAgents(response.data);
       }
       setIsLoading(false);
     } catch (error) {
@@ -82,7 +80,6 @@ function App() {
     <>
       {/* Using Ant Desing Config Provider to update disabled text color */}
       <ConfigProvider
-        componentSize="medium"
         theme={{
           token: {
             colorTextQuaternary: "#000000e0",
@@ -131,14 +128,8 @@ function App() {
               />
             )}
 
-            <Modal
-              centered
-              open={modal}
-              footer={null}
-              onCancel={() => setModal(false)}
-            >
-              {homepageContent ===
-              CONSTANTS.SidebarNavigationOptions.tickets ? (
+            <Modal centered open={modal} footer={null} onCancel={() => setModal(false)}>
+              {homepageContent === CONSTANTS.SidebarNavigationOptions.tickets ? (
                 <CreateTicket
                   setModal={setModal}
                   setRefreshData={setRefreshData}

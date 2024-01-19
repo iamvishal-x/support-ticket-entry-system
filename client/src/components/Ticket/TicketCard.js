@@ -26,7 +26,6 @@ export const TicketCard = ({
     assigned: "#1677ff",
     resolved: "#1bc508",
   };
-
   // Initial values for all the fields received from api
   const initialValues = {
     topic,
@@ -40,6 +39,12 @@ export const TicketCard = ({
     updatedAt,
     id,
   };
+  const customValidateMessages = {
+    string: {
+      range: "Only ${min}-${max} characters allowed",
+    },
+  };
+
   const [formEditing, setFormEditing] = useState(false); // Tells if form is in editing state or not
 
   // Handles call to action buttons functionality
@@ -112,6 +117,7 @@ export const TicketCard = ({
       form={form}
       name="update-ticket"
       layout="inline"
+      validateMessages={customValidateMessages}
       initialValues={initialValues}
       disabled={!formEditing}
       onFinish={handleUpdate}
@@ -125,20 +131,10 @@ export const TicketCard = ({
               rules={[
                 {
                   required: true,
-                  message: "Please input your topic!",
-                },
-                {
-                  min: 3,
-                  message: "Minimum 3 characters",
-                },
-                {
-                  max: 100,
-                  message: "Max 100 characters",
-                },
-                { type: "string" },
-                {
                   whitespace: true,
-                  message: "Whitespace not allowed",
+                  min: CONSTANTS.TicketsCreateValidation.topic.min,
+                  max: CONSTANTS.TicketsCreateValidation.topic.max,
+                  type: CONSTANTS.TicketsCreateValidation.topic.type,
                 },
               ]}
             >
@@ -148,7 +144,7 @@ export const TicketCard = ({
             <Form.Item name="type" className="ticket-card-top-col-1-item-2">
               <Select
                 className="ticket-card-top-type"
-                options={CONSTANTS.TicketsAvailableType.map((type) => {
+                options={CONSTANTS.TicketsCreateValidation.type.options.map((type) => {
                   return { label: type.label, value: type.key };
                 })}
               />
@@ -157,7 +153,7 @@ export const TicketCard = ({
           <div className="ticket-card-top-col-2">
             <Tooltip
               autoAdjustOverflow={true}
-              title={assignedTo?.name || "Unassigned"}
+              title={`Agent: ${assignedTo?.name}` || "Unassigned"}
               key={`ticket-card-${id}`}
             >
               <Avatar
@@ -177,19 +173,16 @@ export const TicketCard = ({
             name="description"
             rules={[
               {
-                max: 200,
-                message: "Description cannot exceed 200 characters",
+                max: CONSTANTS.TicketsCreateValidation.description.max,
               },
             ]}
           >
             <TextArea
-              placeholder={
-                description ? description : "No description available"
-              }
+              placeholder={description ? description : "No description available"}
               className="ticket-card-mid-text-area"
               variant="filled"
               autoSize={{
-                minRows: 3,
+                minRows: 2,
                 maxRows: 5,
               }}
             />
@@ -204,7 +197,7 @@ export const TicketCard = ({
                     width: 130,
                   }}
                   className="ticket-card-bottom-severity"
-                  options={CONSTANTS.TicketsAvailableSeverity.map((type) => {
+                  options={CONSTANTS.TicketsCreateValidation.severity.options.map((type) => {
                     return { label: type.label, value: type.key };
                   })}
                 />
@@ -244,9 +237,7 @@ export const TicketCard = ({
                   danger={formEditing ? true : false}
                   type={formEditing ? "primary" : "primary"}
                   disabled={false}
-                  onClick={() =>
-                    handleActionButton(formEditing ? "Cancel" : "Resolve")
-                  }
+                  onClick={() => handleActionButton(formEditing ? "Cancel" : "Resolve")}
                   icon={!formEditing && <CheckOutlined />}
                 >
                   {formEditing ? "Cancel" : "Resolve"}
@@ -258,9 +249,7 @@ export const TicketCard = ({
               <div className="ticket-card-bottom-row-2-col-2">
                 <Button
                   disabled={false}
-                  onClick={() =>
-                    handleActionButton(formEditing ? "Update" : "Edit")
-                  }
+                  onClick={() => handleActionButton(formEditing ? "Update" : "Edit")}
                   icon={!formEditing && <EditOutlined />}
                 >
                   {formEditing ? "Update" : "Edit"}

@@ -4,15 +4,8 @@ import React from "react";
 import CONSTANTS from "../../../Constants";
 import { Empty } from "antd";
 
-export const TicketHomepage = ({
-  ticketsViewType,
-  tickets,
-  openNotification,
-  setRefreshData,
-}) => {
-  const ticketStatus = CONSTANTS.TicketsAvailableStatus.map(
-    (status) => status.key
-  );
+export const TicketHomepage = ({ ticketsViewType, tickets, openNotification, setRefreshData }) => {
+  const ticketStatus = CONSTANTS.TicketsAvailableStatus.map((status) => status.key);
 
   const renderKanbanBoard = () => {
     return (
@@ -26,24 +19,16 @@ export const TicketHomepage = ({
                   (ticket) =>
                     ticket.status === status && (
                       <TicketCard
-                        key={ticket._id}
-                        topic={ticket.topic}
-                        description={ticket.description}
-                        severity={ticket.severity}
-                        type={ticket.type}
-                        assignedTo={ticket.assignedTo}
-                        status={ticket.status}
-                        resolvedOn={ticket.resolvedOn}
-                        createdAt={ticket.createdAt}
-                        updatedAt={ticket.updatedAt}
+                        {...ticket}
                         id={ticket._id}
+                        key={ticket._id}
                         openNotification={openNotification}
                         setRefreshData={setRefreshData}
                       />
                     )
                 )
               ) : (
-                <Empty description="No tickets found" />
+                <Empty description="No ticket found" />
               )}
             </div>
           </div>
@@ -58,23 +43,15 @@ export const TicketHomepage = ({
         {tickets?.length > 0 ? (
           tickets?.map((ticket, index) => (
             <TicketCard
-              key={ticket._id}
-              topic={ticket.topic}
-              description={ticket.description}
-              severity={ticket.severity}
-              type={ticket.type}
-              assignedTo={ticket.assignedTo}
-              status={ticket.status}
-              resolvedOn={ticket.resolvedOn}
-              createdAt={ticket.createdAt}
-              updatedAt={ticket.updatedAt}
+              {...ticket}
               id={ticket._id}
+              key={ticket._id}
               openNotification={openNotification}
               setRefreshData={setRefreshData}
             />
           ))
         ) : (
-          <Empty description="No tickets found" />
+          <Empty description="No ticket found" />
         )}
       </div>
     );

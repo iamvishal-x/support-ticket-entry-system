@@ -101,7 +101,9 @@ function App() {
           </div>
 
           <div className="app-container">
-            <h1 className="app-container-heading">Ticket Balancer</h1>
+            <h1 className="app-container-heading">
+              Tickets <span>Balancer</span>
+            </h1>
             <SearchBar
               homepageContent={homepageContent}
               ticketsViewType={ticketsViewType}

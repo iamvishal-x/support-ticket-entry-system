@@ -76,15 +76,11 @@
     gap: 1rem;
 }
 
-/* .agent-card-bottom-row-1 {
-    display: flex;
-    justify-content: space-between;
-} */
 
 .agent-card-bottom-row-1> p {
     margin: 0;
     font-size: 12px;
-    text-align: end;
+    text-align: start;
     color: #515c67
 }
 

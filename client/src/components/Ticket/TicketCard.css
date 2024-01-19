@@ -19,7 +19,7 @@
 }
 
 .ticket-card-assigned {
-    border-color: #030ffc4f;box-shadow: 1px 2px 1px 0px #030ffc9e;
+    border-color: #4096ff4f;box-shadow: 1px 2px 1px 0px #4096ff9e;
 }
 .ticket-card-resolved {
     border-color: #1bc5084f;box-shadow: 1px 2px 1px 0px #1bc5089e;
@@ -60,6 +60,7 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 1rem;
+    align-items: center;
 }
 
 .ticket-card-bottom-row-1-col-2 > p {

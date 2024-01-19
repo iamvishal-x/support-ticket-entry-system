@@ -6,7 +6,7 @@ import CONSTANTS from "./Constants.js";
 import { Sidebar } from "./components/Sidebar/Sidebar.js";
 import { AgentHomepage } from "./components/Homepage/AgentHomepage/AgentHomepage.js";
 import { SearchBar } from "./components/Search/SearchBar.js";
-import { ConfigProvider, Modal, notification } from "antd";
+import { ConfigProvider, Modal, Spin, notification } from "antd";
 import { CreateAgent } from "./components/Agent/CreateAgent/CreateAgent.js";
 import { CreateTicket } from "./components/Ticket/CreateTicket/CreateTicket.js";
 
@@ -25,11 +25,13 @@ function App() {
   const [agents, setAgents] = useState([]);
   const [modal, setModal] = useState(false);
   const [refreshData, setRefreshData] = useState(true); // To update agents and tickets list
+  const [loading, setIsLoading] = useState(false);
 
   const [api, contextHolder] = notification.useNotification(); // Ant Desging notification api
 
   const fetchDocuments = async (method, endpoint, context) => {
     try {
+      setIsLoading(true);
       const response = await ApiRequest(method, endpoint);
 
       if (context === "tickets") {
@@ -37,8 +39,10 @@ function App() {
       } else {
         setAgents(response.data); // Set agents state directly
       }
+      setIsLoading(false);
     } catch (error) {
       openNotification(error.message, "error");
+      setIsLoading(false);
     }
   };
 
@@ -85,7 +89,8 @@ function App() {
           },
         }}
       >
-        {/* Ant Desing notification UI */}
+        {/* Ant Desing notification and loader UI */}
+        <Spin spinning={loading} fullscreen />
         {contextHolder}
         <div className="app">
           <div className="app-sidebar">
@@ -108,6 +113,7 @@ function App() {
               fetchDocuments={fetchDocuments}
               agents={agents}
               openNotification={openNotification}
+              setIsLoading={setIsLoading}
             />
 
             {homepageContent === CONSTANTS.SidebarNavigationOptions.tickets ? (

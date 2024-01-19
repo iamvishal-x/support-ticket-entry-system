@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./CreateAgent.css";
 import { Button, Form, Input, Radio, Space } from "antd";
 import CONSTANT from "../../../Constants";
@@ -7,6 +7,7 @@ import ApiRequest from "../../../utils/ApiRequest";
 export const CreateAgent = ({ setModal, setRefreshData, openNotification }) => {
   // Uses Ant Design input fields
   const [form] = Form.useForm();
+  const [isLoading, setIsLoading] = useState(false);
 
   /**
    * Gets the field values, filters out values, and raised a new ticket, if successfull, refreshes the list and closes the modal
@@ -14,6 +15,7 @@ export const CreateAgent = ({ setModal, setRefreshData, openNotification }) => {
    */
   const handleAgentCreation = async (values) => {
     try {
+      setIsLoading(true);
       const filteredObject = Object.keys(values).reduce((acc, curr) => {
         if (values[curr]) {
           return { ...acc, [curr]: values[curr].trim() };
@@ -32,6 +34,8 @@ export const CreateAgent = ({ setModal, setRefreshData, openNotification }) => {
       }
     } catch (error) {
       openNotification(error.message, "error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -148,8 +152,15 @@ export const CreateAgent = ({ setModal, setRefreshData, openNotification }) => {
           }}
         >
           <Space>
-            <Button onClick={handleModalExit}>Cancel</Button>
-            <Button type="primary" htmlType="submit">
+            <Button onClick={handleModalExit} disabled={isLoading}>
+              Cancel
+            </Button>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={isLoading}
+              disabled={isLoading}
+            >
               Create Agent
             </Button>
           </Space>

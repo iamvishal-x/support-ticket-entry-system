@@ -51,7 +51,6 @@ export const SearchBar = ({
     },
   };
 
-  const [fetching, setIsFetching] = useState(false);
   const [filterObject, setFilterObject] = useState(defaultFilterObject);
   const [activeFilters, setActiveFilters] = useState({});
 
@@ -93,7 +92,6 @@ export const SearchBar = ({
    */
   useEffect(() => {
     buildQueryAndFetch();
-    console.log("after update", filterObject);
   }, [filterObject]);
 
   /**

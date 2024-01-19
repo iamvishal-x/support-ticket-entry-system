@@ -112,7 +112,7 @@ export const AgentCard = ({
                 backgroundColor: colorList[Math.floor(Math.random() * 4) + 1],
                 verticalAlign: "middle",
               }}
-              size={{ xs: 50, sm: 50, md: 50, lg: 50, xl: 50, xxl: 50 }}
+              size={{ xs: 40, sm: 40, md: 40, lg: 40, xl: 40, xxl: 40 }}
             >
               {name}
             </Avatar>
@@ -210,8 +210,8 @@ export const AgentCard = ({
               variant="filled"
               placeholder="No description available."
               autoSize={{
-                minRows: 3,
-                maxRows: 5,
+                minRows: 2,
+                maxRows: 3,
               }}
             />
           </Form.Item>
@@ -219,8 +219,7 @@ export const AgentCard = ({
 
         <div className="agent-card-bottom">
           <div className="agent-card-bottom-row-1">
-            <p>Agent Id: {id}</p>
-            <p>Created At: {new Date(createdAt).toDateString()}</p>
+            <p>Created On: {new Date(createdAt).toDateString()}</p>
           </div>
           <div className="agent-card-bottom-row-2">
             <Button

@@ -1,5 +1,5 @@
 import "./CreateTicket.css";
-import React from "react";
+import React, { useState } from "react";
 import { Button, Form, Input, Radio, Space } from "antd";
 import ApiRequest from "../../../utils/ApiRequest";
 import CONSTANTS from "../../../Constants";
@@ -11,13 +11,14 @@ export const CreateTicket = ({
 }) => {
   // Uses Ant Design input fields
   const [form] = Form.useForm();
-
+  const [isLoading, setIsLoading] = useState(false);
   /**
    * Gets the field values, filters out values, and raised a new ticket, if successfull, refreshes the list and closes the modal
    * @param {Object} values
    */
   const handleTicketCreation = async (values) => {
     try {
+      setIsLoading(true);
       const filteredObject = Object.keys(values).reduce((acc, curr) => {
         if (values[curr]) {
           return { ...acc, [curr]: values[curr].trim() };
@@ -37,6 +38,8 @@ export const CreateTicket = ({
     } catch (error) {
       console.log("creation------", error);
       openNotification(error.message, "error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -122,8 +125,15 @@ export const CreateTicket = ({
           }}
         >
           <Space>
-            <Button onClick={handleModalExit}>Cancel</Button>
-            <Button type="primary" htmlType="submit">
+            <Button disabled={isLoading} onClick={handleModalExit}>
+              Cancel
+            </Button>
+            <Button
+              type="primary"
+              disabled={isLoading}
+              htmlType="submit"
+              loading={isLoading}
+            >
               Create Ticket
             </Button>
           </Space>

@@ -23,7 +23,7 @@ export const TicketCard = ({
   const [form] = Form.useForm();
   const colorList = {
     new: "#fc7303",
-    assigned: "#030ffc",
+    assigned: "#1677ff",
     resolved: "#1bc508",
   };
 
@@ -212,15 +212,15 @@ export const TicketCard = ({
             </div>
             <div className="ticket-card-bottom-row-1-col-2">
               <p className="ticket-card-bottom-dates-created">
-                Created at: {new Date(createdAt).toDateString()}
+                Created On: {new Date(createdAt).toDateString()}
               </p>
               {status === "resolved" && resolvedOn ? (
                 <p className="ticket-card-bottom-dates-resolvedOn">
-                  Resolved on: {new Date(resolvedOn).toDateString()}
+                  Resolved On: {new Date(resolvedOn).toDateString()}
                 </p>
               ) : (
                 <p className="ticket-card-bottom-dates-updated">
-                  Updated at: {new Date(updatedAt).toDateString()}
+                  Updated On: {new Date(updatedAt).toDateString()}
                 </p>
               )}
             </div>

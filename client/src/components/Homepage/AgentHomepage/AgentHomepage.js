@@ -1,14 +1,16 @@
 import React from "react";
 import "./AgentHomepage.css";
 import { AgentCard } from "../../Agent/AgentCard";
+import { Empty } from "antd";
 
 export const AgentHomepage = ({ agents, openNotification, setRefreshData }) => {
   return (
     <div className="homepage-agent-container">
-      <div className="homepage-agent-container-grid">
-        {agents &&
-          agents.length > 0 &&
-          agents.map((agent) => (
+      {!agents || agents.length <= 0 ? (
+        <Empty description="No agents found" />
+      ) : (
+        <div className="homepage-agent-container-grid">
+          {agents.map((agent) => (
             <AgentCard
               key={agent._id}
               name={agent.name}
@@ -23,7 +25,8 @@ export const AgentHomepage = ({ agents, openNotification, setRefreshData }) => {
               setRefreshData={setRefreshData}
             />
           ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

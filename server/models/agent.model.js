@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const SupportAgentSchema = new mongoose.Schema(
   {
@@ -36,4 +36,4 @@ const SupportAgentSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("Agent", SupportAgentSchema);
+module.exports = mongoose.model("Agent", SupportAgentSchema);

@@ -1,9 +1,9 @@
-import models from "../models/index.models.js";
-import HttpStatus from "http-status";
-import catchAsync from "../utils/catchAsync.js";
-import ApiError from "../utils/ApiError.js";
-import mongoose from "mongoose";
-import ticketController from "./ticket.controller.js";
+const models = require("../models/index.models.js");
+const HttpStatus = require("http-status");
+const catchAsync = require("../utils/catchAsync.js");
+const ApiError = require("../utils/ApiError.js");
+const mongoose = require("mongoose");
+const ticketController = require("./ticket.controller.js");
 
 const createAgent = catchAsync(async (req, res, next) => {
   const body = req.body;
@@ -115,7 +115,7 @@ const buildMongoQuery = (req, mongoQuery) => {
     sortByOptions[req.query.sortBy] || sortByOptions["createdAtDesc"];
 };
 
-export default {
+module.exports = {
   createAgent,
   getAnAgent,
   updateAgent,

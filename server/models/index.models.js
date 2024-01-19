@@ -1,7 +1,7 @@
-import agentSchema from "./agent.model.js";
-import ticketSchema from "./ticket.model.js";
+const agentSchema = require("./agent.model.js");
+const ticketSchema = require("./ticket.model.js");
 
-export default {
+module.exports = {
   agentSchema,
   ticketSchema,
 };

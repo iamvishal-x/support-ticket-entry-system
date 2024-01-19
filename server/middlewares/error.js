@@ -1,8 +1,8 @@
-import ApiError from "../utils/ApiError.js";
-import HttpStatus from "http-status";
-import validate from "express-validation";
+const ApiError = require("../utils/ApiError.js");
+const HttpStatus = require("http-status");
+const validate = require("express-validation");
 
-export const errorConverter = (err, req, res, next) => {
+const errorConverter = (err, req, res, next) => {
   let error = err;
   if (error instanceof validate.ValidationError) {
     error = constructValidationError(error);
@@ -12,7 +12,7 @@ export const errorConverter = (err, req, res, next) => {
   next(error);
 };
 
-export const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, req, res, next) => {
   let { statusCode, message, stack = null } = err;
 
   const response = {
@@ -50,3 +50,5 @@ const constructOtherError = (error) => {
   error = new ApiError(statusCode, message, error.stack || "");
   return error;
 };
+
+module.exports = { errorConverter, errorHandler };

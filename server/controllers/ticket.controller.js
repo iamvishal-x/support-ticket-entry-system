@@ -1,14 +1,14 @@
-import HttpStatus from "http-status";
-import models from "../models/index.models.js";
-import ApiError from "../utils/ApiError.js";
-import catchAsync from "../utils/catchAsync.js";
-import mongoose from "mongoose";
-import {
+const HttpStatus = require("http-status");
+const models = require("../models/index.models.js");
+const ApiError = require("../utils/ApiError.js");
+const catchAsync = require("../utils/catchAsync.js");
+const mongoose = require("mongoose");
+const {
   TicketFilterByKeysArr,
   TicketStatus,
   splitAndFilterString,
   TicketPopulateFields,
-} from "../constants.js";
+} = require("../constants.js");
 
 const createTicket = catchAsync(async (req, res, next) => {
   const body = req.body;
@@ -197,7 +197,7 @@ const assignTicketsToAgents = catchAsync(async () => {
   }
 });
 
-export default {
+module.exports = {
   createTicket,
   getATicket,
   updateTicket,

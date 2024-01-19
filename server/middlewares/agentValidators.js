@@ -1,4 +1,4 @@
-import Joi from "joi";
+const Joi = require("joi");
 
 const createAgentSchemaValidator = {
   body: Joi.object({
@@ -59,7 +59,7 @@ const getAllAgentsQuery = {
   }),
 };
 
-export default {
+module.exports = {
   createAgentSchemaValidator,
   updateAgentSchemaValidator,
   getAnAgent,

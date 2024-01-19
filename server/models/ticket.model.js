@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { TicketSeverity, TicketStatus, TicketType } from "../constants.js";
+const mongoose = require("mongoose");
+const { TicketSeverity, TicketStatus, TicketType } = require("../constants.js");
 
 const TicketSchema = new mongoose.Schema(
   {
@@ -49,4 +49,4 @@ const TicketSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("Ticket", TicketSchema);
+module.exports = mongoose.model("Ticket", TicketSchema);

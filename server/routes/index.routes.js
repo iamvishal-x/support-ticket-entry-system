@@ -1,6 +1,6 @@
-import express from "express";
-import agentRoutes from "./agent.route.js";
-import ticketRoutes from "./ticket.route.js";
+const express = require("express");
+const agentRoutes = require("./agent.route.js");
+const ticketRoutes = require("./ticket.route.js");
 
 const router = express.Router();
 
@@ -13,4 +13,4 @@ router.use("/support-agents", agentRoutes);
 // Ticket ROutes
 router.use("/support-tickets", ticketRoutes);
 
-export default router;
+module.exports = router;

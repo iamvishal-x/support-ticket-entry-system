@@ -1,7 +1,7 @@
-import express from "express";
-import { validate } from "express-validation";
-import ticketValidator from "../middlewares/ticketValidators.js";
-import ticketController from "../controllers/ticket.controller.js";
+const express = require("express");
+const { validate } = require("express-validation");
+const ticketValidator = require("../middlewares/ticketValidators.js");
+const ticketController = require("../controllers/ticket.controller.js");
 
 const router = express.Router();
 
@@ -26,4 +26,4 @@ router
     ticketController.updateTicket
   );
 
-export default router;
+module.exports = router;

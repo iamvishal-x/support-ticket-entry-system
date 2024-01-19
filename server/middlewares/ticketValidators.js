@@ -1,10 +1,10 @@
-import Joi from "joi";
-import {
+const Joi = require("joi");
+const {
   TicketSeverity,
   TicketStatus,
   TicketType,
   TicketFilterByKeysArr,
-} from "../constants.js";
+} = require("../constants.js");
 
 const createTicketSchemaValidator = {
   body: Joi.object({
@@ -75,7 +75,7 @@ const getAllTicketsQuery = {
   }),
 };
 
-export default {
+module.exports = {
   createTicketSchemaValidator,
   updateTicketSchemaValidator,
   getATicket,

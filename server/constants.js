@@ -1,35 +1,39 @@
-export const TicketStatus = {
+const TicketStatus = {
   new: "new",
   assigned: "assigned",
   resolved: "resolved",
 };
 
-export const TicketSeverity = {
+const TicketSeverity = {
   low: "low",
   medium: "medium",
   high: "high",
 };
 
-export const TicketType = {
+const TicketType = {
   bug: "bug",
   enhancement: "enhancement",
   feature: "feature",
 };
 
-export const TicketFilterByKeysArr = [
-  "status",
-  "assignedTo",
-  "severity",
-  "type",
-];
+const TicketFilterByKeysArr = ["status", "assignedTo", "severity", "type"];
 
-export const TicketPopulateFields = ["assignedTo"];
+const TicketPopulateFields = ["assignedTo"];
 
-export const splitAndFilterString = (str) => {
+const splitAndFilterString = (str) => {
   const arr = str
     .split(",")
     .map((x) => x.trim().toLowerCase())
     .filter((x) => x !== "null" && x !== "undefined");
 
   return arr || [];
+};
+
+module.exports = {
+  TicketStatus,
+  TicketSeverity,
+  TicketType,
+  TicketFilterByKeysArr,
+  TicketPopulateFields,
+  splitAndFilterString,
 };

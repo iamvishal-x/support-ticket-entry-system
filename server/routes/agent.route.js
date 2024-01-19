@@ -1,7 +1,7 @@
-import express from "express";
-import { validate } from "express-validation";
-import agentValidator from "../middlewares/agentValidators.js";
-import agentController from "../controllers/agent.controller.js";
+const express = require("express");
+const { validate } = require("express-validation");
+const agentValidator = require("../middlewares/agentValidators.js");
+const agentController = require("../controllers/agent.controller.js");
 const router = express.Router();
 
 router
@@ -23,4 +23,4 @@ router
     agentController.updateAgent
   );
 
-export default router;
+module.exports = router;

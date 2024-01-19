@@ -1,11 +1,11 @@
-import express, { json } from "express";
-import cors from "cors";
-import mongoose from "mongoose";
-import HttpStatus from "http-status";
-import ApiError from "./utils/ApiError.js";
-import { errorConverter, errorHandler } from "./middlewares/error.js";
-import routes from "./routes/index.routes.js";
-import "dotenv/config.js";
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const HttpStatus = require("http-status");
+const ApiError = require("./utils/ApiError.js");
+const { errorConverter, errorHandler } = require("./middlewares/error.js");
+const routes = require("./routes/index.routes.js");
+require("dotenv/config.js");
 
 const app = express();
 app.use(cors());
@@ -40,3 +40,5 @@ mongoose
   );
 
 app.listen(PORT, () => console.log(`Server started on ${PORT}`));
+
+module.exports = app;

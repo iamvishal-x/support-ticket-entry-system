@@ -18,6 +18,7 @@ router
 router
   .route("/:id")
   .get(validate(agentValidator.getAnAgent), agentController.getAnAgent)
+  .delete(validate(agentValidator.getAnAgent), agentController.deleteAnAgent)
   .patch(
     validate(agentValidator.updateAgentSchemaValidator),
     agentController.updateAgent

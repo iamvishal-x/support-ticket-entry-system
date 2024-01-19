@@ -37,7 +37,7 @@ const updateTicketSchemaValidator = {
   }),
   body: Joi.object({
     topic: Joi.string().optional().not("", null, 0).min(3).max(100),
-    description: Joi.string().default("").not(null, 0).optional().max(200),
+    description: Joi.string().allow("").not(null, 0).optional().max(200),
     severity: Joi.string()
       .valid(...Object.values(TicketSeverity))
       .default(TicketSeverity.low)

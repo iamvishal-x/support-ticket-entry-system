@@ -12,8 +12,8 @@
     width: 100%;
 }
 
-.ticket-card > div:not(:last-child) {
-    margin-bottom: 1rem;
+.ticket-card > div:not(:first-child) {
+    margin-top: 1rem;
 }
 
 .ticket-card-top {
@@ -57,4 +57,9 @@
 .ticket-card-bottom-row-2{
     display: flex;
     justify-content: space-between;
+}
+.ticket-card-bottom-row-2-col-1 {
+    display: flex;
+    justify-content: space-between;
+    gap: .5rem;
 }

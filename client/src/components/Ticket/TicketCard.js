@@ -65,6 +65,9 @@ export const TicketCard = ({
       case "Update":
         form.submit();
         break;
+      case "Delete":
+        await handleDelete();
+        break;
       default:
         break;
     }
@@ -86,6 +89,25 @@ export const TicketCard = ({
         setRefreshData(true);
         setFormEditing(false);
         openNotification("Updated successfully", "success");
+      }
+    } catch (error) {
+      openNotification(error.message, "error");
+    }
+  };
+
+  /**
+   * Delete an Agent
+   */
+  const handleDelete = async () => {
+    try {
+      const response = await ApiRequest(
+        AxiosMethods.DELETE,
+        SupportTicketsEndpoint + "/" + id
+      );
+      if (response && response.success) {
+        setRefreshData(true);
+        setFormEditing(false);
+        openNotification("Deleted successfully", "success");
       }
     } catch (error) {
       openNotification(error.message, "error");
@@ -118,6 +140,11 @@ export const TicketCard = ({
                 {
                   max: 100,
                   message: "Max 100 characters",
+                },
+                { type: "string" },
+                {
+                  whitespace: true,
+                  message: "Whitespace not allowed",
                 },
               ]}
             >
@@ -158,6 +185,9 @@ export const TicketCard = ({
             ]}
           >
             <TextArea
+              placeholder={
+                description ? description : "No description available"
+              }
               className="ticket-card-mid-text-area"
               variant="filled"
               autoSize={{
@@ -198,30 +228,48 @@ export const TicketCard = ({
             </div>
           </div>
 
-          {status !== "resolved" && !resolvedOn && (
-            <div className="ticket-card-bottom-row-2">
-              <Button
-                danger={formEditing ? true : false}
-                type={formEditing ? "primary" : "primary"}
-                disabled={false}
-                onClick={() =>
-                  handleActionButton(formEditing ? "Cancel" : "Resolve")
-                }
-                icon={!formEditing && <CheckOutlined />}
-              >
-                {formEditing ? "Cancel" : "Resolve"}
-              </Button>
-              <Button
-                disabled={false}
-                onClick={() =>
-                  handleActionButton(formEditing ? "Update" : "Edit")
-                }
-                icon={!formEditing && <EditOutlined />}
-              >
-                {formEditing ? "Update" : "Edit"}
-              </Button>
+          <div className="ticket-card-bottom-row-2">
+            <div className="ticket-card-bottom-row-2-col-1">
+              {!formEditing && (
+                <Button
+                  danger
+                  disabled={false}
+                  onClick={() => handleActionButton("Delete")}
+                  icon={<DeleteOutlined />}
+                >
+                  Delete
+                </Button>
+              )}
+
+              {status !== "resolved" && !resolvedOn && (
+                <Button
+                  danger={formEditing ? true : false}
+                  type={formEditing ? "primary" : "primary"}
+                  disabled={false}
+                  onClick={() =>
+                    handleActionButton(formEditing ? "Cancel" : "Resolve")
+                  }
+                  icon={!formEditing && <CheckOutlined />}
+                >
+                  {formEditing ? "Cancel" : "Resolve"}
+                </Button>
+              )}
             </div>
-          )}
+
+            {status !== "resolved" && !resolvedOn && (
+              <div className="ticket-card-bottom-row-2-col-2">
+                <Button
+                  disabled={false}
+                  onClick={() =>
+                    handleActionButton(formEditing ? "Update" : "Edit")
+                  }
+                  icon={!formEditing && <EditOutlined />}
+                >
+                  {formEditing ? "Update" : "Edit"}
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </Form>

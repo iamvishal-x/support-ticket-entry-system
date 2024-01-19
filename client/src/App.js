@@ -12,7 +12,7 @@ import {
 import { Sidebar } from "./components/Sidebar/Sidebar.js";
 import { AgentHomepage } from "./components/Homepage/AgentHomepage/AgentHomepage.js";
 import { SearchBar } from "./components/Search/SearchBar.js";
-import { ConfigProvider, Modal, notification, theme } from "antd";
+import { ConfigProvider, Modal, notification } from "antd";
 import { CreateAgent } from "./components/Agent/CreateAgent/CreateAgent.js";
 import { CreateTicket } from "./components/Ticket/CreateTicket/CreateTicket.js";
 
@@ -101,6 +101,7 @@ function App() {
           </div>
 
           <div className="app-container">
+            <h1 className="app-container-heading">Ticket Balancer</h1>
             <SearchBar
               homepageContent={homepageContent}
               ticketsViewType={ticketsViewType}

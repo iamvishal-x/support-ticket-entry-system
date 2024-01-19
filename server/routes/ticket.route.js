@@ -21,6 +21,7 @@ router.route("/assignTickets").get(ticketController.assignTicketsToAgents);
 router
   .route("/:id")
   .get(validate(ticketValidator.getATicket), ticketController.getATicket)
+  .delete(validate(ticketValidator.getATicket), ticketController.deleteATicket)
   .patch(
     validate(ticketValidator.updateTicketSchemaValidator),
     ticketController.updateTicket

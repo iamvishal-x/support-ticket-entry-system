@@ -9,12 +9,27 @@ const {
   splitAndFilterString,
   TicketPopulateFields,
 } = require("../constants.js");
+require("dotenv/config.js");
 
+const ALLOW_TICKET_RAISE_IF_NO_AGENT =
+  process.env.ALLOW_TICKET_RAISE_IF_NO_AGENT === "true";
+const ALLOW_TICKET_RESOLVE_IF_UNASSIGNED =
+  process.env.ALLOW_TICKET_RESOLVE_IF_UNASSIGNED === "true";
 /**
  * Create a new ticket
  * */
 const createTicket = catchAsync(async (req, res, next) => {
   const body = req.body;
+
+  // Gives admin the flexibility to control these actions
+  if (!ALLOW_TICKET_RAISE_IF_NO_AGENT) {
+    const agents = await models.agentSchema.countDocuments();
+    if (!agents || agents <= 0)
+      throw new ApiError(
+        HttpStatus.BAD_REQUEST,
+        "Please create an agent first"
+      );
+  }
 
   const ticket = await models.ticketSchema.create(body);
   if (!ticket) {
@@ -44,6 +59,22 @@ const getATicket = catchAsync(async (req, res, next) => {
   return res.status(HttpStatus.OK).json({ success: true, data: ticket });
 });
 
+/** Get details of a specific ticket by id */
+const deleteATicket = catchAsync(async (req, res, next) => {
+  const id = req.params.id;
+
+  if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(HttpStatus.BAD_REQUEST, "Invalid id");
+  }
+
+  const ticket = await models.ticketSchema.findByIdAndDelete(id);
+  if (!ticket) {
+    throw new ApiError(HttpStatus.NOT_FOUND, "No ticket found");
+  }
+
+  return res.status(HttpStatus.OK).json({ success: true, data: ticket });
+});
+
 /**
  * Update a ticket's details by id
  * */
@@ -60,7 +91,12 @@ const updateTicket = catchAsync(async (req, res, next) => {
     throw new ApiError(HttpStatus.NOT_FOUND, "No ticket found");
   }
 
-  if (!ticket.assignedTo && body.status === TicketStatus.resolved) {
+  // Gives admin the flexibility to control these actions
+  if (
+    !ALLOW_TICKET_RESOLVE_IF_UNASSIGNED &&
+    !ticket.assignedTo &&
+    body.status === TicketStatus.resolved
+  ) {
     // Todo: Give admin the flexibility to enable or disable it
     throw new ApiError(
       HttpStatus.BAD_REQUEST,
@@ -221,10 +257,24 @@ const assignTicketsToAgents = catchAsync(async () => {
   }
 });
 
+const unassignTickets = catchAsync(async (id) => {
+  const updatedTickets = await models.ticketSchema.updateMany(
+    {
+      assignedTo: id,
+      status: TicketStatus.assigned,
+    },
+    { $set: { assignedTo: null, status: TicketStatus.new } }
+  );
+
+  assignTicketsToAgents();
+});
+
 module.exports = {
   createTicket,
   getATicket,
   updateTicket,
   getAllTickets,
   assignTicketsToAgents,
+  unassignTickets,
+  deleteATicket,
 };

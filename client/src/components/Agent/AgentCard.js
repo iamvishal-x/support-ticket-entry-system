@@ -34,13 +34,14 @@ export const AgentCard = ({
   const [formEditing, setFormEditing] = useState(false); // Tells if form is in editing state or not
 
   // Handles call to action buttons functionality
-  const handleActionButton = (action) => {
+  const handleActionButton = async (action) => {
     switch (action) {
       case "Cancel":
         form.resetFields();
         setFormEditing(false);
         break;
       case "Delete":
+        await handleDelete();
         break;
       case "Edit":
         setFormEditing(true);
@@ -66,6 +67,25 @@ export const AgentCard = ({
         setRefreshData(true);
         setFormEditing(false);
         openNotification("Updated successfully", "success");
+      }
+    } catch (error) {
+      openNotification(error.message, "error");
+    }
+  };
+
+  /**
+   * Delete an Agent
+   */
+  const handleDelete = async () => {
+    try {
+      const response = await ApiRequest(
+        AxiosMethods.DELETE,
+        SupportAgentsEndpoint + "/" + id
+      );
+      if (response && response.success) {
+        setRefreshData(true);
+        setFormEditing(false);
+        openNotification("Deleted successfully", "success");
       }
     } catch (error) {
       openNotification(error.message, "error");

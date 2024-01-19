@@ -20,6 +20,11 @@ const TicketFilterByKeysArr = ["status", "assignedTo", "severity", "type"];
 
 const TicketPopulateFields = ["assignedTo"];
 
+/**
+ * Function to split, filter then transform a comma-seperated string into array with each value being lowercase
+ * @param {string} string comma-separated string
+ * @returns array
+ * */
 const splitAndFilterString = (str) => {
   const arr = str
     .split(",")

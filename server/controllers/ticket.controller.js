@@ -10,6 +10,9 @@ const {
   TicketPopulateFields,
 } = require("../constants.js");
 
+/**
+ * Create a new ticket
+ * */
 const createTicket = catchAsync(async (req, res, next) => {
   const body = req.body;
 
@@ -18,11 +21,12 @@ const createTicket = catchAsync(async (req, res, next) => {
     throw new ApiError(HttpStatus.BAD_REQUEST, "Ticket creation failed");
   }
 
-  assignTicketsToAgents();
+  assignTicketsToAgents(); // invoke assign tickets function
 
   return res.status(HttpStatus.CREATED).json({ success: true, data: ticket });
 });
 
+/** Get details of a specific ticket by id */
 const getATicket = catchAsync(async (req, res, next) => {
   const id = req.params.id;
 
@@ -40,6 +44,9 @@ const getATicket = catchAsync(async (req, res, next) => {
   return res.status(HttpStatus.OK).json({ success: true, data: ticket });
 });
 
+/**
+ * Update a ticket's details by id
+ * */
 const updateTicket = catchAsync(async (req, res, next) => {
   const id = req.params.id;
   const body = req.body;
@@ -54,6 +61,7 @@ const updateTicket = catchAsync(async (req, res, next) => {
   }
 
   if (!ticket.assignedTo && body.status === TicketStatus.resolved) {
+    // Todo: Give admin the flexibility to enable or disable it
     throw new ApiError(
       HttpStatus.BAD_REQUEST,
       "Ticket not assigned yet. Cannot resolve ticket."
@@ -68,6 +76,7 @@ const updateTicket = catchAsync(async (req, res, next) => {
   }
 
   if (body.status === TicketStatus.resolved) {
+    // Attach resolved on time when a ticket status is updated to resolved
     body["resolvedOn"] = new Date().toISOString();
   }
 
@@ -78,6 +87,9 @@ const updateTicket = catchAsync(async (req, res, next) => {
   return res.status(HttpStatus.OK).json({ success: true, data: updatedTicket });
 });
 
+/**
+ * Get a list of all tickets with optional filtering and pagination
+ * */
 const getAllTickets = catchAsync(async (req, res, next) => {
   const mongoQuery = { search: {}, sortBy: {} },
     limit = Math.max(Math.min(req.query.limit || 1000, 1000), 1),
@@ -100,6 +112,9 @@ const getAllTickets = catchAsync(async (req, res, next) => {
     .json({ success: true, page, count: ticketsCount, data: tickets });
 });
 
+/**
+ *  Build the MongoDB query for filtering tickets on basis of user's input
+ * */
 const buildMongoQuery = (req, mongoQuery) => {
   const sortByOptions = {
     createdAtAsc: { createdAt: 1 },
@@ -132,7 +147,11 @@ const buildMongoQuery = (req, mongoQuery) => {
   }
 };
 
+/**
+ * Assign unassigned tickets to available agents in round robin format
+ * */
 const assignTicketsToAgents = catchAsync(async () => {
+  // Get Unassigned Tickets, Available Agents, and Last Assigned Ticket
   const [unassignedTickets, agents, lastAssignedTicket] = await Promise.all([
     models.ticketSchema
       .find({
@@ -141,7 +160,7 @@ const assignTicketsToAgents = catchAsync(async () => {
       })
       .lean()
       .sort({ createdAt: 1 }),
-    models.agentSchema.find({ active: true }).sort({ _id: 1 }).lean(),
+    models.agentSchema.find({ active: true }).sort({ _id: 1 }).lean(), // sorting agents by _id to get the agents in asc order, in mongo _id is in incremental format
     models.ticketSchema
       .find({ status: TicketStatus.assigned })
       .populate("assignedTo")
@@ -151,6 +170,7 @@ const assignTicketsToAgents = catchAsync(async () => {
       .then((x) => x.pop()),
   ]);
 
+  // If no agents or no tickets available then return
   if (!agents.length || !unassignedTickets.length) {
     console.error(
       `No active agents or unassigned tickets found. \n
@@ -158,6 +178,10 @@ const assignTicketsToAgents = catchAsync(async () => {
     );
   }
 
+  // If Unassinged tickets and Agents are available
+  // Loop through the usassigned tickets while checking whom the last raised ticket was assigned
+  // If found, get the Agent's index from sorted Agents array and assign the next ticket to
+  // next available agent, else start from first agent again
   const assignedTicketsQuery = [];
   if (agents.length && unassignedTickets.length) {
     let lastAgentIndex = agents.findIndex((x) => {
@@ -171,8 +195,7 @@ const assignTicketsToAgents = catchAsync(async () => {
     if (!lastAgentIndex) lastAgentIndex = 0;
 
     unassignedTickets.forEach((ticket) => {
-      // agent[0]
-      lastAgentIndex += 1; // agent[1]
+      lastAgentIndex += 1;
       if (!agents[lastAgentIndex]) lastAgentIndex = 0; // checks for next agent -> if no agent then set agent[0];
       assignedTicketsQuery.push({
         updateOne: {
@@ -191,6 +214,7 @@ const assignTicketsToAgents = catchAsync(async () => {
       console.error("No tickets or agents to assign");
     }
 
+    // Use MongoDB's bulkWrite method to update the tickets
     const result = await models.ticketSchema.bulkWrite(assignedTicketsQuery);
     console.log(result);
     return;

@@ -5,6 +5,9 @@ const ApiError = require("../utils/ApiError.js");
 const mongoose = require("mongoose");
 const ticketController = require("./ticket.controller.js");
 
+/**
+ * Create a new agent
+ * */
 const createAgent = catchAsync(async (req, res, next) => {
   const body = req.body;
 
@@ -14,11 +17,14 @@ const createAgent = catchAsync(async (req, res, next) => {
     throw new ApiError(HttpStatus.BAD_REQUEST, "Agent creation failed");
   }
 
-  ticketController.assignTicketsToAgents();
+  ticketController.assignTicketsToAgents(); // Invoke assign tickets function
 
   return res.status(HttpStatus.CREATED).json({ success: true, data: agent });
 });
 
+/**
+ * Get details of a specific agent by id
+ * */
 const getAnAgent = catchAsync(async (req, res, next) => {
   const id = req.params.id;
 
@@ -35,6 +41,9 @@ const getAnAgent = catchAsync(async (req, res, next) => {
   return res.status(HttpStatus.OK).json({ success: true, data: agent });
 });
 
+/**
+ * Update an agent's details by id
+ * */
 const updateAgent = catchAsync(async (req, res, next) => {
   const id = req.params.id;
   const body = req.body;
@@ -54,6 +63,9 @@ const updateAgent = catchAsync(async (req, res, next) => {
   return res.status(HttpStatus.OK).json({ success: true, data: updatedAgent });
 });
 
+/**
+ * Get a list of all agents with optional filtering and pagination
+ * */
 const getAllAgents = catchAsync(async (req, res, next) => {
   const mongoQuery = { search: {}, sortBy: {} },
     limit = Math.max(Math.min(req.query.limit || 1000, 1000), 1),
@@ -75,6 +87,9 @@ const getAllAgents = catchAsync(async (req, res, next) => {
     .json({ success: true, page, count: agentsCount, data: agents });
 });
 
+/**
+ * Build the MongoDB query for filtering agents based on user input
+ * */
 const buildMongoQuery = (req, mongoQuery) => {
   const sortByOptions = {
     createdAtAsc: { createdAt: 1 },

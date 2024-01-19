@@ -2,6 +2,14 @@ const ApiError = require("../utils/ApiError.js");
 const HttpStatus = require("http-status");
 const validate = require("express-validation");
 
+/**
+ * Converts validation errors or any other type of error into ApiError format and pass them on to next middleware
+ * @param {*} err
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns {ApiError} ApiError
+ */
 const errorConverter = (err, req, res, next) => {
   let error = err;
   if (error instanceof validate.ValidationError) {
@@ -11,6 +19,14 @@ const errorConverter = (err, req, res, next) => {
   }
   next(error);
 };
+
+/**
+ * Handles API errors and sends an appropriate response
+ * @param {*} err
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
 
 const errorHandler = (err, req, res, next) => {
   let { statusCode, message, stack = null } = err;

@@ -136,11 +136,8 @@ const assignTicketsToAgents = catchAsync(async () => {
   const [unassignedTickets, agents, lastAssignedTicket] = await Promise.all([
     models.ticketSchema
       .find({
-        $or: [
-          { status: TicketStatus.new },
-          { assignedTo: { $exists: false } },
-          { assignedTo: null },
-        ],
+        status: TicketStatus.new,
+        $or: [{ assignedTo: { $exists: false } }, { assignedTo: null }],
       })
       .lean()
       .sort({ createdAt: 1 }),
@@ -148,7 +145,7 @@ const assignTicketsToAgents = catchAsync(async () => {
     models.ticketSchema
       .find({ status: TicketStatus.assigned })
       .populate("assignedTo")
-      .sort({ createdAt: 1 })
+      .sort({ createdAt: -1 })
       .limit(1)
       .lean()
       .then((x) => x.pop()),

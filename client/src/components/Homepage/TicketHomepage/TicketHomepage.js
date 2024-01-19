@@ -3,7 +3,12 @@ import "./TicketHomepage.css";
 import React from "react";
 import { TicketsViewOptions } from "../../../Constants";
 
-export const TicketHomepage = ({ ticketsViewType, tickets }) => {
+export const TicketHomepage = ({
+  ticketsViewType,
+  tickets,
+  openNotification,
+  setRefreshData,
+}) => {
   console.log("tickets--", tickets);
   const ticketStatus = ["new", "assigned", "resolved"];
   return (
@@ -12,7 +17,7 @@ export const TicketHomepage = ({ ticketsViewType, tickets }) => {
       {ticketsViewType === TicketsViewOptions.kanban && (
         <div className="homepage-kanban-container">
           {ticketStatus.map((status, i) => (
-            <div className="homepage-kanban">
+            <div className="homepage-kanban" key={i + 1}>
               <p className="homepage-kanban-heading">{status}</p>
               <div className="homepage-kanban-ticket-card-wrapper">
                 {tickets?.length > 0 &&
@@ -31,6 +36,8 @@ export const TicketHomepage = ({ ticketsViewType, tickets }) => {
                           createdAt={ticket.createdAt}
                           updatedAt={ticket.updatedAt}
                           id={ticket._id}
+                          openNotification={openNotification}
+                          setRefreshData={setRefreshData}
                         />
                       )
                   )}
@@ -57,6 +64,8 @@ export const TicketHomepage = ({ ticketsViewType, tickets }) => {
                 createdAt={ticket.createdAt}
                 updatedAt={ticket.updatedAt}
                 id={ticket._id}
+                openNotification={openNotification}
+                setRefreshData={setRefreshData}
               />
             ))}
         </div>

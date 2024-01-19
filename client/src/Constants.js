@@ -1,5 +1,5 @@
-export const SupportTicketsEndpoint = "/support-tickets?";
-export const SupportAgentsEndpoint = "/support-agents?";
+export const SupportTicketsEndpoint = "/support-tickets";
+export const SupportAgentsEndpoint = "/support-agents";
 export const AxiosMethods = {
   GET: "GET",
   POST: "POST",
@@ -21,33 +21,39 @@ export const AgentsAvailableSearchBy = [
   { label: "Phone", value: "phone" },
 ];
 
+export const TicketsAvailableStatus = [
+  { label: "New", key: "new" },
+  { label: "Assigned", key: "assigned" },
+  { label: "Resolved", key: "resolved" },
+];
+
+export const TicketsAvailableSeverity = [
+  { label: "Low", key: "low" },
+  { label: "Medium", key: "medium" },
+  { label: "High", key: "high" },
+];
+
+export const TicketsAvailableType = [
+  { label: "Bug", key: "bug" },
+  { label: "Feature", key: "feature" },
+  { label: "Enhancement", key: "enhancement" },
+];
+
 export const TicketsAvailableDropDownFilters = [
   {
     label: "Status",
     value: "status",
-    options: [
-      { label: "New", key: "new" },
-      { label: "Assigned", key: "assigned" },
-      { label: "Resolved", key: "resolved" },
-    ],
+    options: TicketsAvailableStatus,
   },
   {
     label: "Severity",
     value: "severity",
-    options: [
-      { label: "Low", key: "low" },
-      { label: "Medium", key: "medium" },
-      { label: "High", key: "high" },
-    ],
+    options: TicketsAvailableSeverity,
   },
   {
     label: "Type",
     value: "type",
-    options: [
-      { label: "Bug", key: "bug" },
-      { label: "Feature", key: "feature" },
-      { label: "Enhancement", key: "enhancement" },
-    ],
+    options: TicketsAvailableType,
   },
 ];
 

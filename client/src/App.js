@@ -12,7 +12,7 @@ import {
 import { Sidebar } from "./components/Sidebar/Sidebar.js";
 import { AgentHomepage } from "./components/Homepage/AgentHomepage/AgentHomepage.js";
 import { SearchBar } from "./components/Search/SearchBar.js";
-import { Modal, notification } from "antd";
+import { ConfigProvider, Modal, notification, theme } from "antd";
 import { CreateAgent } from "./components/Agent/CreateAgent/CreateAgent.js";
 import { CreateTicket } from "./components/Ticket/CreateTicket/CreateTicket.js";
 
@@ -98,57 +98,73 @@ function App() {
 
   return (
     <>
-      {contextHolder}
-      <div className="app">
-        <div className="app-sidebar">
-          <Sidebar
-            homepageContent={homepageContent}
-            updateHomepageContent={updateHomepageContent}
-          />
-        </div>
-
-        <div className="app-container">
-          <SearchBar
-            homepageContent={homepageContent}
-            ticketsViewType={ticketsViewType}
-            setTicketsViewType={setTicketsViewType}
-            modal={modal}
-            setModal={setModal}
-            fetchDocuments={fetchDocuments}
-            agents={agents}
-          />
-
-          {homepageContent === SidebarNavigationOptions.tickets ? (
-            <TicketHomepage
-              ticketsViewType={ticketsViewType}
-              tickets={tickets}
+      <ConfigProvider
+        theme={{
+          token: {
+            colorTextQuaternary: "#000000e0",
+            // colorBgContainerDisabled: "#fff",
+          },
+        }}
+      >
+        {contextHolder}
+        <div className="app">
+          <div className="app-sidebar">
+            <Sidebar
+              homepageContent={homepageContent}
+              updateHomepageContent={updateHomepageContent}
             />
-          ) : (
-            <AgentHomepage agents={agents} />
-          )}
+          </div>
 
-          <Modal
-            centered
-            open={modal}
-            footer={null}
-            onCancel={() => setModal(false)}
-          >
+          <div className="app-container">
+            <SearchBar
+              homepageContent={homepageContent}
+              ticketsViewType={ticketsViewType}
+              setTicketsViewType={setTicketsViewType}
+              modal={modal}
+              setModal={setModal}
+              fetchDocuments={fetchDocuments}
+              agents={agents}
+              openNotification={openNotification}
+            />
+
             {homepageContent === SidebarNavigationOptions.tickets ? (
-              <CreateTicket
-                setModal={setModal}
-                setRefreshData={setRefreshData}
+              <TicketHomepage
+                ticketsViewType={ticketsViewType}
+                tickets={tickets}
                 openNotification={openNotification}
+                setRefreshData={setRefreshData}
               />
             ) : (
-              <CreateAgent
-                setModal={setModal}
-                setRefreshData={setRefreshData}
+              <AgentHomepage
+                agents={agents}
                 openNotification={openNotification}
+                setRefreshData={setRefreshData}
               />
             )}
-          </Modal>
+
+            <Modal
+              centered
+              open={modal}
+              footer={null}
+              onCancel={() => setModal(false)}
+            >
+              {homepageContent === SidebarNavigationOptions.tickets ? (
+                <CreateTicket
+                  setModal={setModal}
+                  setRefreshData={setRefreshData}
+                  openNotification={openNotification}
+                />
+              ) : (
+                <CreateAgent
+                  setModal={setModal}
+                  setRefreshData={setRefreshData}
+                  openNotification={openNotification}
+                />
+              )}
+            </Modal>
+          </div>
         </div>
-      </div>
+      </ConfigProvider>
     </>
   );
 }

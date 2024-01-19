@@ -15,8 +15,6 @@
 .app-container {
   width: 90%;
   padding: 2rem;
-  height: 100vh;
-  overflow: scroll;
 }
 
 .divider-vertical {

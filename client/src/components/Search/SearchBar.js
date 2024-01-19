@@ -112,9 +112,11 @@ export const SearchBar = ({
   const buildQueryAndFetch = () => {
     const data = filterObject[homepageContent];
 
-    let queryString = isTicketsPage
+    let queryEndpoint = isTicketsPage
       ? SupportTicketsEndpoint
       : SupportAgentsEndpoint;
+
+    let queryString = "";
 
     Object.entries(data).forEach(([key, value]) => {
       if (!value || !value.length) return;
@@ -130,7 +132,11 @@ export const SearchBar = ({
       queryString += `&${key}=${value}`;
     });
 
-    fetchDocuments(AxiosMethods.GET, queryString, homepageContent);
+    if (queryString.length) {
+      queryEndpoint += `?${queryString}`;
+    }
+
+    fetchDocuments(AxiosMethods.GET, queryEndpoint, homepageContent);
   };
 
   /**
@@ -138,7 +144,7 @@ export const SearchBar = ({
    * @param {*} value agent name
    */
   const getAgentsArray = async (value) => {
-    const queryString = `${SupportAgentsEndpoint}searchBy="name"&search=${value}`;
+    const queryString = `${SupportAgentsEndpoint}?searchBy="name"&search=${value}`;
 
     await fetchDocuments(
       AxiosMethods.GET,
@@ -171,7 +177,7 @@ export const SearchBar = ({
           {isTicketsPage && (
             <div className="search-top-left-filters">
               {dropdownFilters.map((filter) => (
-                <>
+                <span key={filter.value}>
                   <Divider className="divider-vertical" type="vertical" />
                   <Dropdown
                     menu={{
@@ -200,7 +206,7 @@ export const SearchBar = ({
                       </Button>
                     </Tooltip>
                   </Dropdown>
-                </>
+                </span>
               ))}
               <Divider className="divider-vertical" type="vertical" />
               <Tooltip

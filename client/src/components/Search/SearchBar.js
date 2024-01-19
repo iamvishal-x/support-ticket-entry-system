@@ -65,6 +65,7 @@ export const SearchBar = ({
 
   const [fetching, setIsFetching] = useState(false);
   const [filterObject, setFilterObject] = useState(defaultFilterObject);
+  const [activeFilters, setActiveFilters] = useState({});
 
   /**
    * Function to update filterObject state with new values
@@ -88,7 +89,7 @@ export const SearchBar = ({
    * @param name name of the field
    * @returns value of the given name field
    */
-  const getDefaultValue = (name) => {
+  const getCurrentValue = (name) => {
     return filterObject[homepageContent][name];
   };
 
@@ -104,6 +105,7 @@ export const SearchBar = ({
    */
   useEffect(() => {
     buildQueryAndFetch();
+    console.log("after update", filterObject);
   }, [filterObject]);
 
   /**
@@ -129,11 +131,22 @@ export const SearchBar = ({
 
       if (key === "searchBy" && !data.search) return;
 
+      console.log("active", activeFilters, key, value);
+      // setActiveFilters({ [key]: value.join(",") });
       queryString += `&${key}=${value}`;
     });
 
     if (queryString.length) {
       queryEndpoint += `?${queryString}`;
+      const activeFilterList = Object.fromEntries(
+        queryString
+          .split("&")
+          .filter((x) => x)
+          .map((x) => x.split("="))
+      );
+      setActiveFilters(activeFilterList);
+    } else {
+      setActiveFilters({});
     }
 
     fetchDocuments(AxiosMethods.GET, queryEndpoint, homepageContent);
@@ -153,6 +166,11 @@ export const SearchBar = ({
     );
   };
 
+  const handleRemoveFilter = (key) => {
+    const defaultValue = defaultFilterObject[homepageContent][key];
+    updateFilterObject(key, defaultValue);
+  };
+
   return (
     <div className="search">
       <div className="search-top">
@@ -160,14 +178,15 @@ export const SearchBar = ({
           <div className="search-top-left-searchbar">
             <Space.Compact>
               <Select
-                defaultValue={getDefaultValue("searchBy")}
+                defaultValue={getCurrentValue("searchBy")}
+                value={getCurrentValue("searchBy")}
                 options={searchByFilters}
                 onSelect={(e) => updateFilterObject("searchBy", e)}
               />
               <Input
-                placeholder={`Search ${getDefaultValue("searchBy") || "all"}`}
+                placeholder={`Search ${getCurrentValue("searchBy") || "all"}`}
                 allowClear={true}
-                value={getDefaultValue("search")}
+                value={getCurrentValue("search")}
                 onChange={(e) => updateFilterObject("search", e.target.value)}
               />
             </Space.Compact>
@@ -183,6 +202,7 @@ export const SearchBar = ({
                       items: filter.options,
                       multiple: true,
                       selectable: true,
+                      selectedKeys: getCurrentValue(filter.value),
                       onSelect: (e) => {
                         updateFilterObject(filter.value, e.selectedKeys);
                       },
@@ -219,7 +239,7 @@ export const SearchBar = ({
                   maxTagCount="responsive"
                   maxCount={3}
                   style={{ width: "200px" }}
-                  value={getDefaultValue("assignedTo")}
+                  value={getCurrentValue("assignedTo")}
                   options={agents.map((agent) => {
                     return {
                       label: agent.name,
@@ -254,7 +274,7 @@ export const SearchBar = ({
                 borderStartStartRadius: "6px",
                 borderEndStartRadius: "6px",
               }}
-              defaultValue={getDefaultValue("sortBy")}
+              value={getCurrentValue("sortBy")}
               options={sortByFilters}
               onChange={(e) => updateFilterObject("sortBy", e)}
             />
@@ -263,7 +283,7 @@ export const SearchBar = ({
             <>
               <Divider className="divider-vertical" type="vertical" />
               <Radio.Group
-                defaultValue={ticketsViewType}
+                value={ticketsViewType}
                 onChange={(e) => {
                   setTicketsViewType(e.target.value);
                 }}
@@ -282,7 +302,25 @@ export const SearchBar = ({
       </div>
       <Divider className="divider-horizontal divider-horizontal-custom" />
       <div className="search-bottom">
-        <div className="search-bottom-left"></div>
+        <div className="search-bottom-left">
+          {Object.entries(activeFilters)?.map(([key, value]) => (
+            <span
+              className="search-bottom-left-col-1"
+              key={key}
+              onClick={() => handleRemoveFilter(key)}
+            >
+              <Tooltip
+                title={"Click to remove filter"}
+                key={`active-filter-${key}`}
+              >
+                {key}:
+                {key === "assignedTo"
+                  ? value.split(",").length + " Agents"
+                  : value}
+              </Tooltip>
+            </span>
+          ))}
+        </div>
         <div className="search-bottom-right">
           <Button type="primary" onClick={() => setModal(!modal)}>
             Create {isTicketsPage ? "Ticket" : "Agent"}

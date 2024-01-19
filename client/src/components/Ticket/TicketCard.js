@@ -1,6 +1,6 @@
 import "./TicketCard.css";
 import React, { useState } from "react";
-import { Avatar, Button, Form, Input, Select } from "antd";
+import { Avatar, Button, Form, Input, Select, Tooltip } from "antd";
 import { CheckOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import {
@@ -123,7 +123,7 @@ export const TicketCard = ({
       disabled={!formEditing}
       onFinish={handleUpdate}
     >
-      <div className="ticket-card">
+      <div className={`ticket-card ticket-card-${status}`}>
         <div className="ticket-card-top">
           <div className="ticket-card-top-col-1">
             <Form.Item
@@ -150,6 +150,7 @@ export const TicketCard = ({
             >
               <Input className="ticket-card-top-topic" variant="filled" />
             </Form.Item>
+
             <Form.Item name="type">
               <Select
                 style={{
@@ -163,15 +164,21 @@ export const TicketCard = ({
             </Form.Item>
           </div>
           <div className="ticket-card-top-col-2">
-            <Avatar
-              style={{
-                backgroundColor: colorList[status],
-                verticalAlign: "middle",
-              }}
-              size="medium"
+            <Tooltip
+              autoAdjustOverflow={true}
+              title={assignedTo?.name || "Unassigned"}
+              key={`ticket-card-${id}`}
             >
-              {assignedTo?.name || "Unassigned"}
-            </Avatar>
+              <Avatar
+                style={{
+                  backgroundColor: colorList[status],
+                  verticalAlign: "middle",
+                }}
+                size="medium"
+              >
+                {assignedTo?.name || "Unassigned"}
+              </Avatar>
+            </Tooltip>
           </div>
         </div>
         <div className="ticket-card-mid">

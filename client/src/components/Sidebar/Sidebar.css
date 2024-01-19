@@ -24,10 +24,12 @@
     border-color:#4096ff;
     color: #4096ff;
     background-color: white;
+    box-shadow: 1px 2px 1px 0px #4096ff9e;
 }
 .sidebar-key:hover {
     border-color:#4096ff;
     color: #4096ff;
     background-color: white;
+    box-shadow: 1px 2px 1px 0px #4096ff9e;
 }
 

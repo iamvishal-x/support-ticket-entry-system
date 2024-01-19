@@ -27,7 +27,7 @@ export const AgentCard = ({
     name,
     active,
     description,
-    phone,
+    phone: String(phone),
     email,
   };
 
@@ -45,6 +45,9 @@ export const AgentCard = ({
         break;
       case "Edit":
         setFormEditing(true);
+        break;
+      case "Update":
+        form.submit();
         break;
       default:
         break;
@@ -100,7 +103,9 @@ export const AgentCard = ({
       initialValues={initialValues}
       onFinish={handleUpdate}
     >
-      <div className="agent-card">
+      <div
+        className={`agent-card agent-card-${active ? "active" : "inactive"}`}
+      >
         <div className="agent-card-top">
           <div className="agent-card-top-col-1">
             <Avatar
@@ -234,7 +239,6 @@ export const AgentCard = ({
               onClick={() =>
                 handleActionButton(formEditing ? "Update" : "Edit")
               }
-              htmlType={formEditing ? "submit" : "button"}
               icon={!formEditing && <EditOutlined />}
             >
               {formEditing ? "Update" : "Edit"}

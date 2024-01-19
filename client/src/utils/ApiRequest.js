@@ -4,6 +4,14 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const ApiRequest = async (method, path, data) => {
   try {
+    console.log(
+      "app-url",
+      API_BASE_URL,
+      "env",
+      process.env.REACT_APP_API_BASE_URL,
+      "final-url",
+      `${API_BASE_URL}/api${path}`
+    );
     const response = await axios({
       method,
       url: `${API_BASE_URL}/api${path}`,

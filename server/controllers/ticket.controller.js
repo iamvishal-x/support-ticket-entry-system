@@ -10,6 +10,7 @@ const {
   TicketPopulateFields,
   ALLOW_TICKET_RAISE_IF_NO_AGENT,
   ALLOW_TICKET_RESOLVE_IF_UNASSIGNED,
+  ALLOW_TICKET_DELETE_IF_ASSIGNED,
 } = require("../constants.js");
 
 /**
@@ -59,12 +60,23 @@ const deleteATicket = catchAsync(async (req, res, next) => {
     throw new ApiError(HttpStatus.BAD_REQUEST, "Invalid id");
   }
 
-  const ticket = await models.ticketSchema.findByIdAndDelete(id);
-  if (!ticket) {
+  if (!ALLOW_TICKET_DELETE_IF_ASSIGNED) {
+    const isAssigned = await models.ticketSchema.findOne({
+      _id: id,
+      assignedTo: { $exists: true, $nin: [null, undefined] },
+    });
+
+    if (isAssigned) {
+      throw new ApiError(HttpStatus.BAD_REQUEST, "Assigned tickets cannot be deleted");
+    }
+  }
+
+  const deletedTicket = await models.ticketSchema.findByIdAndDelete(id);
+  if (!deletedTicket) {
     throw new ApiError(HttpStatus.NOT_FOUND, "No ticket found");
   }
 
-  return res.status(HttpStatus.OK).json({ success: true, data: ticket });
+  return res.status(HttpStatus.OK).json({ success: true, data: deletedTicket });
 });
 
 /**
@@ -184,7 +196,7 @@ const assignTicketsToAgents = catchAsync(async () => {
     models.agentSchema.find({ active: true }).sort({ _id: 1 }).lean(), // sorting agents by _id to get the agents in asc order, in mongo _id is in incremental format
     models.ticketSchema
       .find({ status: TicketStatus.assigned })
-      .populate("assignedTo")
+      .populate(TicketPopulateFields)
       .sort({ createdAt: -1 })
       .limit(1)
       .lean()

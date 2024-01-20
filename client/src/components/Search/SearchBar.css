@@ -47,7 +47,6 @@
 }
 
 .search-bottom-left {
-    width: 100%;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -81,8 +80,9 @@
 
 .search-bottom-right {
     display: flex;
-    width: 50%;
+    flex-direction: row-reverse;
     justify-content: end;
     gap: 1rem;
     flex-wrap: nowrap;
+    width: 50%;
 }

@@ -1,17 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./SearchBar.css";
-import {
-  Select,
-  Space,
-  Radio,
-  Input,
-  Divider,
-  Dropdown,
-  Button,
-  Tooltip,
-} from "antd";
+import { Select, Space, Radio, Input, Divider, Dropdown, Button, Tooltip, Spin } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import CONSTANTS from "../../Constants.js";
+import ApiRequest from "../../utils/ApiRequest.js";
 
 export const SearchBar = ({
   homepageContent,
@@ -21,9 +13,10 @@ export const SearchBar = ({
   setModal,
   fetchDocuments,
   agents,
+  openNotification,
+  loading,
 }) => {
-  const isTicketsPage =
-    homepageContent === CONSTANTS.SidebarNavigationOptions.tickets; // To check if current homepage is Ticket
+  const isTicketsPage = homepageContent === CONSTANTS.SidebarNavigationOptions.tickets; // To check if current homepage is Ticket
 
   const sortByFilters = isTicketsPage // Accordingly update sort by filters
     ? CONSTANTS.TicketsAvailableSortByOptions
@@ -150,9 +143,30 @@ export const SearchBar = ({
     );
   };
 
+  /**
+   * Removes clicked filter from active filters and updates the active filters
+   * @param {*} key
+   */
   const handleRemoveFilter = (key) => {
     const defaultValue = defaultFilterObject[homepageContent][key];
     updateFilterObject(key, defaultValue);
+  };
+  /**
+   * Start a force sync of tickets assignment to agents, if, for any reason the automatic ticket assignment fails
+   */
+  const handleForceSync = async () => {
+    try {
+      const response = await ApiRequest(
+        CONSTANTS.AxiosMethods.GET,
+        CONSTANTS.SupportTicketsEndpoint + "/assignTickets"
+      );
+
+      if (response && response.success) {
+        openNotification(response.message, "success");
+      }
+    } catch (error) {
+      openNotification(error.message, "error");
+    }
   };
 
   return (
@@ -179,10 +193,7 @@ export const SearchBar = ({
           {isTicketsPage && (
             <div className="search-top-left-filters">
               {CONSTANTS.TicketsAvailableDropDownFilters.map((filter) => (
-                <div
-                  className="search-top-left-filters-dropdowns"
-                  key={filter.value}
-                >
+                <div className="search-top-left-filters-dropdowns" key={filter.value}>
                   <Divider className="divider-vertical" type="vertical" />
                   <Dropdown
                     menu={{
@@ -239,9 +250,7 @@ export const SearchBar = ({
                       updateFilterObject("assignedTo", newValue);
                     }}
                     filterOption={(input, option) => {
-                      return option.label
-                        .toLowerCase()
-                        .includes(input.toLowerCase());
+                      return option.label.toLowerCase().includes(input.toLowerCase());
                     }}
                     placeholder="Filter by multiple agent"
                   />
@@ -252,11 +261,7 @@ export const SearchBar = ({
         </div>
         <div className="search-top-right">
           <Space.Compact>
-            <Input
-              placeholder="Sort By"
-              className="search-top-right-sort"
-              disabled
-            />
+            <Input placeholder="Sort By" className="search-top-right-sort" disabled />
             <Select
               style={{
                 width: "100%",
@@ -279,14 +284,8 @@ export const SearchBar = ({
               key={key}
               onClick={() => handleRemoveFilter(key)}
             >
-              <Tooltip
-                title={"Click to remove filter"}
-                key={`active-filter-${key}`}
-              >
-                {key}:
-                {key === "assignedTo"
-                  ? value.split(",").length + " Agents"
-                  : value}
+              <Tooltip title={"Click to remove filter"} key={`active-filter-${key}`}>
+                {key}:{key === "assignedTo" ? value.split(",").length + " Agents" : value}
               </Tooltip>
             </span>
           ))}
@@ -294,6 +293,14 @@ export const SearchBar = ({
         <div className="search-bottom-right">
           {isTicketsPage && (
             <>
+              <Tooltip
+                title="Force sync on automatic tickets assign failure"
+                key="force-sync-tickets"
+              >
+                <Button danger onClick={handleForceSync}>
+                  Sync Tickets
+                </Button>
+              </Tooltip>
               <Radio.Group
                 value={ticketsViewType}
                 onChange={(e) => {
@@ -301,12 +308,8 @@ export const SearchBar = ({
                 }}
                 buttonStyle="solid"
               >
-                <Radio.Button value={CONSTANTS.TicketsViewOptions.kanban}>
-                  Kanban View
-                </Radio.Button>
-                <Radio.Button value={CONSTANTS.TicketsViewOptions.list}>
-                  List View
-                </Radio.Button>
+                <Radio.Button value={CONSTANTS.TicketsViewOptions.kanban}>Kanban View</Radio.Button>
+                <Radio.Button value={CONSTANTS.TicketsViewOptions.list}>List View</Radio.Button>
               </Radio.Group>
             </>
           )}

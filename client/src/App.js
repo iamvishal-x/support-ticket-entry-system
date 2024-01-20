@@ -23,13 +23,13 @@ function App() {
   const [agents, setAgents] = useState([]);
   const [modal, setModal] = useState(false);
   const [refreshData, setRefreshData] = useState(true); // To update agents and tickets list
-  const [loading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [api, contextHolder] = notification.useNotification(); // Ant Desging notification api
 
   const fetchDocuments = async (method, endpoint, context) => {
     try {
-      setIsLoading(true);
+      setLoading(true);
       const response = await ApiRequest(method, endpoint);
 
       if (context === "tickets") {
@@ -37,10 +37,10 @@ function App() {
       } else {
         setAgents(response.data);
       }
-      setIsLoading(false);
+      setLoading(false);
     } catch (error) {
       openNotification(error.message, "error");
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -110,7 +110,7 @@ function App() {
               fetchDocuments={fetchDocuments}
               agents={agents}
               openNotification={openNotification}
-              setIsLoading={setIsLoading}
+              loading={loading}
             />
 
             {homepageContent === CONSTANTS.SidebarNavigationOptions.tickets ? (

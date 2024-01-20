@@ -8,13 +8,10 @@ const {
   TicketStatus,
   splitAndFilterString,
   TicketPopulateFields,
+  ALLOW_TICKET_RAISE_IF_NO_AGENT,
+  ALLOW_TICKET_RESOLVE_IF_UNASSIGNED,
 } = require("../constants.js");
-require("dotenv/config.js");
 
-const ALLOW_TICKET_RAISE_IF_NO_AGENT =
-  process.env.ALLOW_TICKET_RAISE_IF_NO_AGENT === "true";
-const ALLOW_TICKET_RESOLVE_IF_UNASSIGNED =
-  process.env.ALLOW_TICKET_RESOLVE_IF_UNASSIGNED === "true";
 /**
  * Create a new ticket
  * */
@@ -25,10 +22,7 @@ const createTicket = catchAsync(async (req, res, next) => {
   if (!ALLOW_TICKET_RAISE_IF_NO_AGENT) {
     const agents = await models.agentSchema.countDocuments();
     if (!agents || agents <= 0)
-      throw new ApiError(
-        HttpStatus.BAD_REQUEST,
-        "Please create an agent first"
-      );
+      throw new ApiError(HttpStatus.BAD_REQUEST, "Please create an agent first");
   }
 
   const ticket = await models.ticketSchema.create(body);
@@ -49,9 +43,7 @@ const getATicket = catchAsync(async (req, res, next) => {
     throw new ApiError(HttpStatus.BAD_REQUEST, "Invalid id");
   }
 
-  const ticket = await models.ticketSchema
-    .findById(id)
-    .populate(TicketPopulateFields);
+  const ticket = await models.ticketSchema.findById(id).populate(TicketPopulateFields);
   if (!ticket) {
     throw new ApiError(HttpStatus.NOT_FOUND, "No ticket found");
   }
@@ -98,17 +90,11 @@ const updateTicket = catchAsync(async (req, res, next) => {
     body.status === TicketStatus.resolved
   ) {
     // Todo: Give admin the flexibility to enable or disable it
-    throw new ApiError(
-      HttpStatus.BAD_REQUEST,
-      "Ticket not assigned yet. Cannot resolve ticket."
-    );
+    throw new ApiError(HttpStatus.BAD_REQUEST, "Ticket not assigned yet. Cannot resolve ticket.");
   }
 
   if (ticket.resolvedOn && ticket.status === TicketStatus.resolved) {
-    throw new ApiError(
-      HttpStatus.BAD_REQUEST,
-      "Ticket resolved. Update not allowed"
-    );
+    throw new ApiError(HttpStatus.BAD_REQUEST, "Ticket resolved. Update not allowed");
   }
 
   if (body.status === TicketStatus.resolved) {
@@ -163,8 +149,7 @@ const buildMongoQuery = (req, mongoQuery) => {
     resolvedOnDesc: { resolvedOn: -1 },
   };
 
-  mongoQuery["sortBy"] =
-    sortByOptions[req.query.sortBy] || sortByOptions["createdAtDesc"];
+  mongoQuery["sortBy"] = sortByOptions[req.query.sortBy] || sortByOptions["createdAtDesc"];
 
   const andQuery = TicketFilterByKeysArr.reduce((acc, key) => {
     const value = req.query[key];
@@ -221,10 +206,7 @@ const assignTicketsToAgents = catchAsync(async () => {
   const assignedTicketsQuery = [];
   if (agents.length && unassignedTickets.length) {
     let lastAgentIndex = agents.findIndex((x) => {
-      console.log(
-        "index",
-        String(x._id) === String(lastAssignedTicket?.assignedTo?._id)
-      );
+      console.log("index", String(x._id) === String(lastAssignedTicket?.assignedTo?._id));
       return String(x._id) === String(lastAssignedTicket?.assignedTo?._id);
     });
 
@@ -266,7 +248,9 @@ const unassignTickets = catchAsync(async (id) => {
     { $set: { assignedTo: null, status: TicketStatus.new } }
   );
 
-  assignTicketsToAgents();
+  if (updatedTickets.matchedCount && updatedTickets.modifiedCount) {
+    assignTicketsToAgents();
+  }
 });
 
 module.exports = {

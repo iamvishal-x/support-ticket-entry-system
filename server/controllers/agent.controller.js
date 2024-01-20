@@ -4,11 +4,10 @@ const catchAsync = require("../utils/catchAsync.js");
 const ApiError = require("../utils/ApiError.js");
 const mongoose = require("mongoose");
 const ticketController = require("./ticket.controller.js");
-const { TicketStatus } = require("../constants.js");
-require("dotenv/config.js");
-
-const ALLOW_AGENT_DEACTIVATE_OR_DELETE_IF_HAS_TICKETS =
-  process.env.ALLOW_AGENT_DEACTIVATE_OR_DELETE_IF_HAS_TICKETS === "true";
+const {
+  TicketStatus,
+  ALLOW_AGENT_DEACTIVATE_OR_DELETE_IF_HAS_TICKETS,
+} = require("../constants.js");
 
 /**
  * Create a new agent
@@ -63,10 +62,7 @@ const deleteAnAgent = catchAsync(async (req, res, next) => {
     });
 
     if (tickets && tickets > 0) {
-      throw new ApiError(
-        HttpStatus.BAD_REQUEST,
-        "Delete failed, Agent has active tickets"
-      );
+      throw new ApiError(HttpStatus.BAD_REQUEST, "Delete failed, Agent has active tickets");
     }
   }
 
@@ -94,20 +90,14 @@ const updateAgent = catchAsync(async (req, res, next) => {
   }
 
   // Gives admin the flexibility to control these actions
-  if (
-    !ALLOW_AGENT_DEACTIVATE_OR_DELETE_IF_HAS_TICKETS &&
-    body.active === false
-  ) {
+  if (!ALLOW_AGENT_DEACTIVATE_OR_DELETE_IF_HAS_TICKETS && body.active === false) {
     const tickets = await models.ticketSchema.countDocuments({
       assignedTo: id,
       status: { $ne: TicketStatus.resolved },
     });
 
     if (tickets && tickets > 0) {
-      throw new ApiError(
-        HttpStatus.BAD_REQUEST,
-        "Update failed, Agent has active tickets"
-      );
+      throw new ApiError(HttpStatus.BAD_REQUEST, "Update failed, Agent has active tickets");
     }
   }
 
@@ -149,9 +139,7 @@ const getAllAgents = catchAsync(async (req, res, next) => {
     models.agentSchema.find(mongoQuery.search).countDocuments(),
   ]);
 
-  return res
-    .status(HttpStatus.OK)
-    .json({ success: true, page, count: agentsCount, data: agents });
+  return res.status(HttpStatus.OK).json({ success: true, page, count: agentsCount, data: agents });
 });
 
 /**
@@ -186,15 +174,10 @@ const buildMongoQuery = (req, mongoQuery) => {
   } else if (searchBy) {
     mongoQuery["search"] = { [searchBy]: regex };
   } else {
-    mongoQuery["search"]["$or"] = [
-      { name: regex },
-      { email: regex },
-      { description: regex },
-    ];
+    mongoQuery["search"]["$or"] = [{ name: regex }, { email: regex }, { description: regex }];
   }
 
-  mongoQuery["sortBy"] =
-    sortByOptions[req.query.sortBy] || sortByOptions["createdAtDesc"];
+  mongoQuery["sortBy"] = sortByOptions[req.query.sortBy] || sortByOptions["createdAtDesc"];
 };
 
 module.exports = {

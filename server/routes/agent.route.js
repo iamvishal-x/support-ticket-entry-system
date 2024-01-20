@@ -6,22 +6,13 @@ const router = express.Router();
 
 router
   .route("/")
-  .post(
-    validate(agentValidator.createAgentSchemaValidator),
-    agentController.createAgent
-  )
-  .get(
-    validate(agentValidator.getAllAgentsQuery),
-    agentController.getAllAgents
-  );
+  .post(validate(agentValidator.createAgentSchemaValidator), agentController.createAgent)
+  .get(validate(agentValidator.getAllAgentsQuery), agentController.getAllAgents);
 
 router
   .route("/:id")
   .get(validate(agentValidator.getAnAgent), agentController.getAnAgent)
   .delete(validate(agentValidator.getAnAgent), agentController.deleteAnAgent)
-  .patch(
-    validate(agentValidator.updateAgentSchemaValidator),
-    agentController.updateAgent
-  );
+  .patch(validate(agentValidator.updateAgentSchemaValidator), agentController.updateAgent);
 
 module.exports = router;

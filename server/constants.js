@@ -1,3 +1,5 @@
+require("dotenv/config.js");
+
 const TicketStatus = {
   new: "new",
   assigned: "assigned",
@@ -34,6 +36,12 @@ const splitAndFilterString = (str) => {
   return arr || [];
 };
 
+const ALLOW_TICKET_RAISE_IF_NO_AGENT = process.env.ALLOW_TICKET_RAISE_IF_NO_AGENT === "true";
+const ALLOW_TICKET_RESOLVE_IF_UNASSIGNED =
+  process.env.ALLOW_TICKET_RESOLVE_IF_UNASSIGNED === "true";
+const ALLOW_AGENT_DEACTIVATE_OR_DELETE_IF_HAS_TICKETS =
+  process.env.ALLOW_AGENT_DEACTIVATE_OR_DELETE_IF_HAS_TICKETS === "true";
+
 module.exports = {
   TicketStatus,
   TicketSeverity,
@@ -41,4 +49,7 @@ module.exports = {
   TicketFilterByKeysArr,
   TicketPopulateFields,
   splitAndFilterString,
+  ALLOW_TICKET_RAISE_IF_NO_AGENT,
+  ALLOW_TICKET_RESOLVE_IF_UNASSIGNED,
+  ALLOW_AGENT_DEACTIVATE_OR_DELETE_IF_HAS_TICKETS,
 };

@@ -167,57 +167,57 @@ The backend application is hosted live at [https://support-ticket-entry-system-s
 Attaching few screenshots of the live application, just for an overview.
 
 - Tickets Homepage \
-  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/tree/main/assets/tickets-kanban-empty.png)
+  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/blob/main/assets/tickets-kanban-empty.png)
 
 - Raise a ticket \
-  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/tree/main/assets/tickets-create.png)
+  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/blob/main/assets/tickets-create.png)
 
 - All Tickets - Kanban View \
-  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/tree/main/assets/tickets-kanban-view.png)
+  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/blob/main/assets/tickets-kanban-view.png)
 
 - All Tickets - List View \
-  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/tree/main/assets/tickets-list-view.png)
+  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/blob/main/assets/tickets-list-view.png)
 
 - Filtered Tickets - Kanban View \
-  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/tree/main/assets/tickets-kanban-filtered.png)
+  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/blob/main/assets/tickets-kanban-filtered.png)
 
 ---
 
 - Agents Homepage \
-  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/tree/main/assets/agents-empty.png)
+  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/blob/main/assets/agents-empty.png)
 
 - Create an Agent \
-  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/tree/main/assets/agents-create.png)
+  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/blob/main/assets/agents-create.png)
 
 - Update an Agent \
-  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/tree/main/assets/agents-update.png)
+  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/blob/main/assets/agents-update.png)
 
 - All Agents \
-  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/tree/main/assets/agents-all.png)
+  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/blob/main/assets/agents-all.png)
 
 - Agents Filtered \
-  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/tree/main/assets/agents-filtered.png)
+  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/blob/main/assets/agents-filtered.png)
 
 ## Planning
 
 This is a miscelleneaous section which provides a little overview of how I planned the application and share some early design prototypes that illustrate the intended look and feel of the app.
 
 - Tickets Homepage - Kanban View \
-  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/tree/main/assets/tickets-kanban-proto.png)
+  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/blob/main/assets/tickets-kanban-proto.png)
 
 - Tickets Homepage - List View \
-  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/tree/main/assets/tickets-list-proto.png)
+  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/blob/main/assets/tickets-list-proto.png)
 
 - Tickets Card \
-  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/tree/main/assets/tickets-card-proto.png)
+  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/blob/main/assets/tickets-card-proto.png)
 
 ---
 
 - Agents Homepage \
-  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/tree/main/assets/agents-list-proto.png)
+  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/blob/main/assets/agents-list-proto.png)
 
 - Agents Card \
-  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/tree/main/assets/agents-card-proto.png)
+  ![homepage](https://github.com/iamvishal-x/support-ticket-entry-system/blob/main/assets/agents-card-proto.png)
 
 ## Contact
 

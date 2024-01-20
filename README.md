@@ -90,11 +90,6 @@ To run the backend application locally, follow these steps:
    ```
 5. Configure your environment variables by updating the .env with the necessary values.
 
-   ```bash
-   MONGO_URL= your local mongodb/mongodb atlas url
-   PORT=the port you want to run the application on
-   ```
-
 6. Start the backend/server application
    ```bash
    npm run start
